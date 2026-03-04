@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 
 // ─── Microsoft Auth Config ────────────────────────────────────────────────────
 const CLIENT_ID = "637cb567-14f5-41ce-a1af-1ff2c6276418";
-const TENANT_ID = "d1960820-2847-439e-83bb-90f2c0ea15c9";
+const TENANT_ID = "common";
 const REDIRECT_URI = window.location.origin;
 const SCOPES = "Tasks.ReadWrite User.Read";
 const AUTH_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize`;
@@ -153,7 +153,7 @@ function LoginScreen({ onLogin }) {
 // ─── Main App ─────────────────────────────────────────────────────────────────
 export default function App() {
   const [authState, setAuthState] = useState(() => {
-    const stored = sessionStorage.getItem("ms_tokens");
+    const stored = localStorage.getItem("ms_tokens");
     return stored ? JSON.parse(stored) : null;
   });
   const [user, setUser] = useState(null);
@@ -179,7 +179,7 @@ export default function App() {
       window.history.replaceState({}, "", window.location.pathname);
       exchangeCode(code).then(tokens => {
         if (tokens.access_token) {
-          sessionStorage.setItem("ms_tokens", JSON.stringify(tokens));
+          localStorage.setItem("ms_tokens", JSON.stringify(tokens));
           setAuthState(tokens);
         } else {
           setError("Authentication failed. Please try again.");
@@ -197,7 +197,7 @@ export default function App() {
     if (authState.refresh_token && Date.now() > expiry - 60000) {
       const fresh = await refreshToken(authState.refresh_token);
       if (fresh.access_token) {
-        sessionStorage.setItem("ms_tokens", JSON.stringify(fresh));
+        localStorage.setItem("ms_tokens", JSON.stringify(fresh));
         setAuthState(fresh);
         return fresh.access_token;
       }
@@ -550,7 +550,7 @@ export default function App() {
         </div>
 
         <div style={{ padding:"12px 12px 0" }}>
-          <button onClick={() => { sessionStorage.removeItem("ms_tokens"); setAuthState(null); }} style={{
+          <button onClick={() => { localStorage.removeItem("ms_tokens"); setAuthState(null); }} style={{
             width:"100%", padding:"9px 12px", borderRadius:10, border:"1px solid #E2E8F0",
             background:"transparent", color:"#94A3B8", fontSize:13, cursor:"pointer",
             fontFamily:"'DM Sans', sans-serif", textAlign:"left"
