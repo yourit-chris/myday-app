@@ -167,8 +167,8 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
     setSubtasks(prev => prev.filter(s => s.id !== subtask.id));
   }
 
-  const p = priorityColors[priority];
-
+  const focusPriority = cur ? priorityColors[cur.priority] : null;
+  
   return (
     <>
       <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.2)",zIndex:40,animation:"fi 0.2s ease"}}/>
@@ -442,7 +442,7 @@ export default function App() {
             {confetti && <ConfettiPop onDone={()=>setConfetti(false)}/>}
             <div style={{display:"inline-flex",alignItems:"center",gap:8,marginBottom:32,background:"rgba(255,255,255,0.06)",borderRadius:100,padding:"6px 16px"}}>
               <span style={{color:"#94A3B8",fontSize:13}}>{cur?.listName}</span>
-              <span style={{background:p?.bg,color:p?.text,borderRadius:100,padding:"2px 10px",fontSize:11,fontWeight:600}}>{cur?.priority}</span>
+              <span style={{background:focusPriority?.bg,color:focusPriority?.text,borderRadius:100,padding:"2px 10px",fontSize:11,fontWeight:600}}>{cur?.priority}</span>
             </div>
             <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:32,lineHeight:1.35,marginBottom:52,fontWeight:700,letterSpacing:"-0.5px"}}>{cur?.title}</h1>
             <button className="cbtn" onClick={completeFocusTask} style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",border:"none",fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",transition:"all 0.2s",boxShadow:"0 8px 32px rgba(16,185,129,0.2)"}}>✓</button>
