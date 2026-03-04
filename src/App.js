@@ -57,28 +57,23 @@ const priorityColors = {
 
 const HELP_STEPS = [
   {
-    icon: "➕",
-    title: "Adding Tasks",
+    icon: "➕", title: "Adding Tasks",
     body: "Click '+ Add Task' in the top right to create a new task. Choose which List it belongs to (these come from your Microsoft To Do lists) and set a priority level. You can also add due dates and notes by clicking any task to open its detail panel."
   },
   {
-    icon: "☀️",
-    title: "Building Your My Day",
+    icon: "☀️", title: "Building Your My Day",
     body: "My Day is your focused list for today. Hover over any task in the task list and click '+ My Day' to add it. Tasks you've marked in Microsoft To Do will also appear here. You can drag the chips in the My Day strip to reorder them however you like."
   },
   {
-    icon: "▶",
-    title: "Focus Mode",
-    body: "Once your My Day is set, click the '▶ Start' button. The app switches to a distraction-free view showing one task at a time. Tap the green checkmark to complete it and sync it back to Microsoft To Do — then the next task appears automatically. Use 'Skip for now' if you want to come back to something."
+    icon: "▶", title: "Focus Mode",
+    body: "Once your My Day is set, click the '▶ Start' button. The app switches to a distraction-free view showing one task at a time, including any notes and subtasks. Tap the green checkmark to complete it and sync it back to Microsoft To Do."
   },
   {
-    icon: "🔄",
-    title: "Syncing with Microsoft To Do",
-    body: "My Day syncs directly with your Microsoft To Do account. Tasks you add, complete, or edit here instantly appear in the Microsoft To Do app on any device. Hit the '↻ Refresh' button at any time to pull in the latest changes from Microsoft To Do."
+    icon: "🔄", title: "Syncing with Microsoft To Do",
+    body: "My Day syncs directly with your Microsoft To Do account. Tasks you add, complete, or edit here instantly appear in the Microsoft To Do app on any device. Hit the '↻ Refresh' button at any time to pull in the latest changes."
   },
   {
-    icon: "📱",
-    title: "Install as an App",
+    icon: "📱", title: "Install as an App",
     body: "On iPhone: Open this site in Safari, tap the Share button (box with arrow), then tap 'Add to Home Screen'. On Windows: Open in Chrome or Edge, look for the install icon (⊕) in the address bar, and click Install. Both work offline and feel like native apps!"
   },
 ];
@@ -87,55 +82,26 @@ function HelpModal({ onClose }) {
   const [step, setStep] = useState(0);
   const current = HELP_STEPS[step];
   const isLast = step === HELP_STEPS.length - 1;
-
   return (
     <>
       <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:60,animation:"fi 0.2s ease"}}/>
-      <div style={{
-        position:"fixed", top:"50%", left:"50%",
-        transform:"translate(-50%,-50%)",
-        background:"white", borderRadius:24, width:480, maxWidth:"calc(100vw - 48px)",
-        zIndex:70, boxShadow:"0 32px 80px rgba(0,0,0,0.2)",
-        display:"flex", flexDirection:"column",
-        animation:"popIn 0.3s cubic-bezier(.16,1,.3,1)"
-      }}>
+      <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"white",borderRadius:24,width:480,maxWidth:"calc(100vw - 48px)",zIndex:70,boxShadow:"0 32px 80px rgba(0,0,0,0.2)",display:"flex",flexDirection:"column",animation:"popIn 0.3s cubic-bezier(.16,1,.3,1)"}}>
         <style>{`@keyframes popIn{from{opacity:0;transform:translate(-50%,-48%) scale(0.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}`}</style>
-
-        {/* Progress dots */}
-        <div style={{padding:"24px 28px 0", display:"flex", alignItems:"center", justifyContent:"space-between"}}>
-          <div style={{display:"flex", gap:6}}>
+        <div style={{padding:"24px 28px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{display:"flex",gap:6}}>
             {HELP_STEPS.map((_,i)=>(
-              <div key={i} onClick={()=>setStep(i)} style={{
-                width: i===step ? 20 : 6, height:6, borderRadius:3,
-                background: i===step ? "#3B82F6" : i<step ? "#BFDBFE" : "#E2E8F0",
-                cursor:"pointer", transition:"all 0.3s"
-              }}/>
+              <div key={i} onClick={()=>setStep(i)} style={{width:i===step?20:6,height:6,borderRadius:3,background:i===step?"#3B82F6":i<step?"#BFDBFE":"#E2E8F0",cursor:"pointer",transition:"all 0.3s"}}/>
             ))}
           </div>
           <button onClick={onClose} style={{background:"#F1F5F9",border:"none",borderRadius:8,width:28,height:28,cursor:"pointer",fontSize:14,color:"#64748B",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
         </div>
-
-        {/* Content */}
         <div style={{padding:"24px 28px 28px"}}>
-          <div style={{
-            width:56, height:56, borderRadius:16,
-            background:"linear-gradient(135deg,#EFF6FF,#DBEAFE)",
-            display:"flex", alignItems:"center", justifyContent:"center",
-            fontSize:28, marginBottom:16
-          }}>{current.icon}</div>
-          <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:22, color:"#0F172A", fontWeight:700, marginBottom:12}}>{current.title}</h2>
-          <p style={{fontSize:14, color:"#475569", lineHeight:1.7, marginBottom:28}}>{current.body}</p>
-
-          <div style={{display:"flex", gap:10}}>
-            {step > 0 && (
-              <button onClick={()=>setStep(s=>s-1)} style={{padding:"11px 20px",borderRadius:10,border:"1.5px solid #E2E8F0",background:"white",color:"#64748B",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>← Back</button>
-            )}
-            <button onClick={()=>isLast ? onClose() : setStep(s=>s+1)} style={{
-              flex:1, padding:"11px", borderRadius:10, border:"none",
-              background: isLast ? "linear-gradient(135deg,#10B981,#059669)" : "linear-gradient(135deg,#3B82F6,#6366F1)",
-              color:"white", fontSize:14, cursor:"pointer",
-              fontFamily:"'DM Sans',sans-serif", fontWeight:600
-            }}>{isLast ? "Got it, let's go! ☀️" : "Next →"}</button>
+          <div style={{width:56,height:56,borderRadius:16,background:"linear-gradient(135deg,#EFF6FF,#DBEAFE)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,marginBottom:16}}>{current.icon}</div>
+          <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#0F172A",fontWeight:700,marginBottom:12}}>{current.title}</h2>
+          <p style={{fontSize:14,color:"#475569",lineHeight:1.7,marginBottom:28}}>{current.body}</p>
+          <div style={{display:"flex",gap:10}}>
+            {step>0&&<button onClick={()=>setStep(s=>s-1)} style={{padding:"11px 20px",borderRadius:10,border:"1.5px solid #E2E8F0",background:"white",color:"#64748B",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>← Back</button>}
+            <button onClick={()=>isLast?onClose():setStep(s=>s+1)} style={{flex:1,padding:"11px",borderRadius:10,border:"none",background:isLast?"linear-gradient(135deg,#10B981,#059669)":"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600}}>{isLast?"Got it, let's go! ☀️":"Next →"}</button>
           </div>
         </div>
       </div>
@@ -153,12 +119,7 @@ function ConfettiPop({ onDone }) {
   return (
     <div style={{position:"absolute",top:"50%",left:"50%",pointerEvents:"none",zIndex:100}}>
       {pieces.map(p=>(
-        <div key={p.id} style={{
-          position:"absolute",width:p.size,height:p.size,background:p.color,
-          borderRadius:p.round?"50%":"2px",left:p.x,top:p.y,
-          animation:"cfetti 1.1s ease-out forwards",opacity:0,
-          animationDelay:`${Math.random()*.15}s`
-        }}/>
+        <div key={p.id} style={{position:"absolute",width:p.size,height:p.size,background:p.color,borderRadius:p.round?"50%":"2px",left:p.x,top:p.y,animation:"cfetti 1.1s ease-out forwards",opacity:0,animationDelay:`${Math.random()*.15}s`}}/>
       ))}
       <style>{`@keyframes cfetti{0%{opacity:1;transform:translate(0,0) rotate(0deg)}100%{opacity:0;transform:translate(0,30px) rotate(480deg)}}`}</style>
     </div>
@@ -234,9 +195,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
   async function addSubtask() {
     if (!newSubtask.trim()) return;
     const token = await getToken();
-    const created = await graphFetch(token, `/me/todo/lists/${task.listId}/tasks/${task.id}/checklistItems`, "POST", {
-      displayName: newSubtask.trim(), isChecked: false,
-    });
+    const created = await graphFetch(token, `/me/todo/lists/${task.listId}/tasks/${task.id}/checklistItems`, "POST", { displayName: newSubtask.trim(), isChecked: false });
     setSubtasks(prev => [...prev, created]);
     setNewSubtask("");
   }
@@ -257,11 +216,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
     <>
       <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.2)",zIndex:40,animation:"fi 0.2s ease"}}/>
       <div style={{position:"fixed",top:0,right:0,bottom:0,width:420,background:"white",zIndex:50,boxShadow:"-8px 0 48px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",animation:"slideIn 0.3s cubic-bezier(.16,1,.3,1)"}}>
-        <style>{`
-          @keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-          @keyframes fi{from{opacity:0}to{opacity:1}}
-          .subtask-row:hover .subtask-del{opacity:1!important}
-        `}</style>
+        <style>{`@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}} @keyframes fi{from{opacity:0}to{opacity:1}} .subtask-row:hover .subtask-del{opacity:1!important}`}</style>
         <div style={{padding:"20px 24px 16px",borderBottom:"1px solid #F1F5F9",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:18,color:"#0F172A",fontWeight:700}}>Task Details</h2>
           <button onClick={onClose} style={{background:"#F1F5F9",border:"none",borderRadius:8,width:32,height:32,cursor:"pointer",fontSize:16,color:"#64748B",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
@@ -269,8 +224,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
         <div style={{flex:1,overflowY:"auto",padding:"20px 24px"}}>
           <div style={{marginBottom:18}}>
             <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Title</label>
-            <input value={title} onChange={e=>setTitle(e.target.value)}
-              style={{width:"100%",fontSize:16,fontWeight:500,padding:"12px 14px",borderRadius:10,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#0F172A",boxSizing:"border-box"}}/>
+            <input value={title} onChange={e=>setTitle(e.target.value)} style={{width:"100%",fontSize:16,fontWeight:500,padding:"12px 14px",borderRadius:10,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#0F172A",boxSizing:"border-box"}}/>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:18}}>
             <div>
@@ -295,14 +249,12 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
             </div>
             <div>
               <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Due Date</label>
-              <input type="date" value={dueDate} onChange={e=>setDueDate(e.target.value)}
-                style={{width:"100%",padding:"10px 12px",borderRadius:10,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer",boxSizing:"border-box"}}/>
+              <input type="date" value={dueDate} onChange={e=>setDueDate(e.target.value)} style={{width:"100%",padding:"10px 12px",borderRadius:10,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer",boxSizing:"border-box"}}/>
             </div>
           </div>
           <div style={{marginBottom:18}}>
             <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Notes</label>
-            <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Add notes…" rows={4}
-              style={{width:"100%",padding:"10px 14px",borderRadius:10,fontSize:14,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",resize:"vertical",boxSizing:"border-box",background:"white"}}/>
+            <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Add notes…" rows={4} style={{width:"100%",padding:"10px 14px",borderRadius:10,fontSize:14,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",resize:"vertical",boxSizing:"border-box",background:"white"}}/>
           </div>
           <div>
             <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:10}}>Subtasks</label>
@@ -316,8 +268,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
                   </div>
                 ))}
                 <div style={{display:"flex",gap:8,marginTop:8}}>
-                  <input value={newSubtask} onChange={e=>setNewSubtask(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addSubtask()} placeholder="Add a subtask…"
-                    style={{flex:1,padding:"8px 12px",borderRadius:8,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white"}}/>
+                  <input value={newSubtask} onChange={e=>setNewSubtask(e.target.value)} onKeyDown={e=>e.key==="Enter"&&addSubtask()} placeholder="Add a subtask…" style={{flex:1,padding:"8px 12px",borderRadius:8,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white"}}/>
                   <button onClick={addSubtask} style={{padding:"8px 14px",borderRadius:8,border:"none",background:"#0F172A",color:"white",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600}}>Add</button>
                 </div>
               </>
@@ -353,8 +304,8 @@ export default function App() {
   const [myDayOrder, setMyDayOrder] = useState([]);
   const [dragId, setDragId] = useState(null);
   const [showHelp, setShowHelp] = useState(false);
+  const [focusSubtasks, setFocusSubtasks] = useState([]);
 
-  // Show welcome modal on first ever login
   useEffect(() => {
     const seen = localStorage.getItem("help_seen");
     if (!seen && authState?.access_token) {
@@ -386,6 +337,18 @@ export default function App() {
     if (!authState?.access_token) return;
     loadAll();
   }, [authState]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Load subtasks for current focus task
+  useEffect(() => {
+    const cur = focusTasks[focusIndex];
+    if (!cur || view !== "focus") return;
+    setFocusSubtasks([]);
+    getToken().then(token =>
+      graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems`)
+        .then(data => setFocusSubtasks(data?.value || []))
+        .catch(() => setFocusSubtasks([]))
+    );
+  }, [focusIndex, view]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function loadAll() {
     setLoading(true); setError(null);
@@ -509,6 +472,14 @@ export default function App() {
     if (next >= focusTasks.length) setAllDone(true); else setFocusIndex(next);
   }
 
+  async function toggleFocusSubtask(subtask) {
+    const cur = focusTasks[focusIndex];
+    if (!cur) return;
+    const token = await getToken();
+    await graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems/${subtask.id}`, "PATCH", { isChecked: !subtask.isChecked });
+    setFocusSubtasks(prev => prev.map(s => s.id === subtask.id ? { ...s, isChecked: !s.isChecked } : s));
+  }
+
   const displayedTasks = activeList === "myday" ? tasks.filter(t=>t.addedToDay)
     : activeList === "all" ? tasks
     : tasks.filter(t=>t.listId===activeList);
@@ -528,30 +499,18 @@ export default function App() {
   if (view === "focus") {
     const cur = focusTasks[focusIndex];
     const focusPriority = cur ? priorityColors[cur.priority] : null;
-    const [focusSubtasks, setFocusSubtasks] = useState([]);
-useEffect(() => {
-  if (!cur) return;
-  setFocusSubtasks([]);
-  getToken().then(token =>
-    graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems`)
-      .then(data => setFocusSubtasks(data?.value || []))
-  );
-}, [cur?.id]); // eslint-disable-line react-hooks/exhaustive-deps
-
-async function toggleFocusSubtask(subtask) {
-  const token = await getToken();
-  await graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems/${subtask.id}`, "PATCH", { isChecked: !subtask.isChecked });
-  setFocusSubtasks(prev => prev.map(s => s.id === subtask.id ? { ...s, isChecked: !s.isChecked } : s));
-}
+    const hasNotes = cur?.msTask?.body?.content && cur.msTask.body.content.trim().length > 0;
+    const hasSubtasks = focusSubtasks.length > 0;
     return (
       <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",padding:24}}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
           .fc{animation:su 0.5s cubic-bezier(.16,1,.3,1) both}
           @keyframes su{from{opacity:0;transform:translateY(28px) scale(0.97)}to{opacity:1;transform:none}}
           .cbtn:hover{transform:scale(1.05);box-shadow:0 0 48px rgba(16,185,129,0.5)!important}
-          .sbtn:hover{opacity:0.7}`}</style>
-        <div style={{width:"100%",maxWidth:520,marginBottom:44}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:8,color:"#475569",fontSize:13}}>
+          .sbtn:hover{opacity:0.7}
+          .fsubtask:hover{background:rgba(255,255,255,0.08)!important}`}</style>
+        <div style={{width:"100%",maxWidth:560,marginBottom:44}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:8,fontSize:13}}>
             <span style={{color:"#64748B"}}>Task {Math.min(focusIndex+1,focusTasks.length)} of {focusTasks.length}</span>
             <span style={{cursor:"pointer",color:"#475569"}} onClick={()=>setView("planner")}>← Back to Planner</span>
           </div>
@@ -559,6 +518,7 @@ async function toggleFocusSubtask(subtask) {
             <div style={{height:"100%",borderRadius:4,background:"linear-gradient(90deg,#3B82F6,#10B981)",width:`${(focusIndex/focusTasks.length)*100}%`,transition:"width 0.5s ease"}}/>
           </div>
         </div>
+
         {allDone ? (
           <div style={{textAlign:"center",animation:"su 0.5s both"}}>
             <div style={{fontSize:72,marginBottom:16}}>🎉</div>
@@ -567,29 +527,42 @@ async function toggleFocusSubtask(subtask) {
             <button onClick={()=>{setView("planner");loadAll();}} style={{background:"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",border:"none",borderRadius:14,padding:"14px 36px",fontSize:16,fontFamily:"'DM Sans',sans-serif",cursor:"pointer",fontWeight:600}}>Back to Planner</button>
           </div>
         ) : (
-          <div className="fc" key={focusIndex} style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:28,padding:"52px 48px",maxWidth:520,width:"100%",textAlign:"center",position:"relative"}}>
+          <div className="fc" key={focusIndex} style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:28,padding:"44px 48px",maxWidth:560,width:"100%",textAlign:"center",position:"relative"}}>
             {confetti && <ConfettiPop onDone={()=>setConfetti(false)}/>}
-            <div style={{display:"inline-flex",alignItems:"center",gap:8,marginBottom:32,background:"rgba(255,255,255,0.06)",borderRadius:100,padding:"6px 16px"}}>
+
+            {/* List + priority badge */}
+            <div style={{display:"inline-flex",alignItems:"center",gap:8,marginBottom:24,background:"rgba(255,255,255,0.06)",borderRadius:100,padding:"6px 16px"}}>
               <span style={{color:"#94A3B8",fontSize:13}}>{cur?.listName}</span>
               <span style={{background:focusPriority?.bg,color:focusPriority?.text,borderRadius:100,padding:"2px 10px",fontSize:11,fontWeight:600}}>{cur?.priority}</span>
             </div>
-            <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:32,lineHeight:1.35,marginBottom:52,fontWeight:700,letterSpacing:"-0.5px"}}>{cur?.title}</h1>
-            {cur?.msTask?.body?.content && (
-            <p style={{color:"#94A3B8",fontSize:14,lineHeight:1.7,marginBottom:focusSubtasks.length?20:36,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"12px 16px",textAlign:"left"}}>{cur.msTask.body.content}</p>
-          )}
-          
-          {focusSubtasks.length>0 && (
-            <div style={{marginBottom:36,textAlign:"left"}}>
-              {focusSubtasks.map(s=>(
-                <div key={s.id} onClick={()=>toggleFocusSubtask(s)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,marginBottom:4,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer"}}>
-                  <div style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:`2px solid ${s.isChecked?"#10B981":"rgba(255,255,255,0.2)"}`,background:s.isChecked?"#10B981":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"white"}}>{s.isChecked&&"✓"}</div>
-                  <span style={{fontSize:13,color:s.isChecked?"#475569":"#CBD5E1",textDecoration:s.isChecked?"line-through":"none"}}>{s.displayName}</span>
-                </div>
-              ))}
-            </div>
-          )}
-            <button className="cbtn" onClick={completeFocusTask} style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",border:"none",fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",transition:"all 0.2s",boxShadow:"0 8px 32px rgba(16,185,129,0.2)"}}>✓</button>
-            <p style={{color:"#475569",fontSize:13,marginBottom:24}}>Tap to complete & sync</p>
+
+            {/* Title */}
+            <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:30,lineHeight:1.35,marginBottom: hasNotes||hasSubtasks ? 20 : 44,fontWeight:700,letterSpacing:"-0.5px"}}>{cur?.title}</h1>
+
+            {/* Notes */}
+            {hasNotes && (
+              <div style={{marginBottom:hasSubtasks?16:32,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"12px 16px",textAlign:"left",border:"1px solid rgba(255,255,255,0.06)"}}>
+                <p style={{fontSize:11,fontWeight:600,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6}}>Notes</p>
+                <p style={{color:"#94A3B8",fontSize:14,lineHeight:1.7,margin:0}}>{cur.msTask.body.content}</p>
+              </div>
+            )}
+
+            {/* Subtasks */}
+            {hasSubtasks && (
+              <div style={{marginBottom:32,textAlign:"left"}}>
+                <p style={{fontSize:11,fontWeight:600,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Subtasks</p>
+                {focusSubtasks.map(s=>(
+                  <div key={s.id} className="fsubtask" onClick={()=>toggleFocusSubtask(s)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,marginBottom:4,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer",transition:"background 0.15s"}}>
+                    <div style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:`2px solid ${s.isChecked?"#10B981":"rgba(255,255,255,0.2)"}`,background:s.isChecked?"#10B981":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"white",transition:"all 0.15s"}}>{s.isChecked&&"✓"}</div>
+                    <span style={{fontSize:13,color:s.isChecked?"#475569":"#CBD5E1",textDecoration:s.isChecked?"line-through":"none",transition:"all 0.15s"}}>{s.displayName}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Complete button */}
+            <button className="cbtn" onClick={completeFocusTask} style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",border:"none",fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",transition:"all 0.2s",boxShadow:"0 8px 32px rgba(16,185,129,0.2)"}}>✓</button>
+            <p style={{color:"#475569",fontSize:13,marginBottom:20}}>Tap to complete & sync</p>
             {focusIndex < focusTasks.length-1 && (
               <button className="sbtn" onClick={skipFocusTask} style={{background:"transparent",border:"1px solid rgba(255,255,255,0.1)",color:"#475569",borderRadius:10,padding:"8px 20px",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"opacity 0.2s"}}>Skip for now →</button>
             )}
@@ -666,7 +639,7 @@ async function toggleFocusSubtask(subtask) {
             </p>
           </div>
           <div style={{display:"flex",gap:10,alignItems:"center"}}>
-            <button onClick={()=>setShowHelp(true)} style={{width:36,height:36,borderRadius:"50%",border:"1px solid #E2E8F0",background:"white",color:"#64748B",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,transition:"all 0.15s"}} title="Help">?</button>
+            <button onClick={()=>setShowHelp(true)} style={{width:36,height:36,borderRadius:"50%",border:"1px solid #E2E8F0",background:"white",color:"#64748B",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}} title="Help">?</button>
             <button onClick={loadAll} style={{background:"white",border:"1px solid #E2E8F0",borderRadius:12,padding:"10px 16px",fontSize:13,cursor:"pointer",color:"#64748B",fontFamily:"'DM Sans',sans-serif"}}>↻ Refresh</button>
             <button onClick={()=>setShowAddTask(true)} style={{background:"#0F172A",color:"white",border:"none",borderRadius:12,padding:"10px 20px",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600}}>+ Add Task</button>
           </div>
