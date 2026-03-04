@@ -55,6 +55,94 @@ const priorityColors = {
   Low:    { bg:"#DCFCE7", text:"#16A34A", dot:"#22C55E" },
 };
 
+const HELP_STEPS = [
+  {
+    icon: "➕",
+    title: "Adding Tasks",
+    body: "Click '+ Add Task' in the top right to create a new task. Choose which List it belongs to (these come from your Microsoft To Do lists) and set a priority level. You can also add due dates and notes by clicking any task to open its detail panel."
+  },
+  {
+    icon: "☀️",
+    title: "Building Your My Day",
+    body: "My Day is your focused list for today. Hover over any task in the task list and click '+ My Day' to add it. Tasks you've marked in Microsoft To Do will also appear here. You can drag the chips in the My Day strip to reorder them however you like."
+  },
+  {
+    icon: "▶",
+    title: "Focus Mode",
+    body: "Once your My Day is set, click the '▶ Start' button. The app switches to a distraction-free view showing one task at a time. Tap the green checkmark to complete it and sync it back to Microsoft To Do — then the next task appears automatically. Use 'Skip for now' if you want to come back to something."
+  },
+  {
+    icon: "🔄",
+    title: "Syncing with Microsoft To Do",
+    body: "My Day syncs directly with your Microsoft To Do account. Tasks you add, complete, or edit here instantly appear in the Microsoft To Do app on any device. Hit the '↻ Refresh' button at any time to pull in the latest changes from Microsoft To Do."
+  },
+  {
+    icon: "📱",
+    title: "Install as an App",
+    body: "On iPhone: Open this site in Safari, tap the Share button (box with arrow), then tap 'Add to Home Screen'. On Windows: Open in Chrome or Edge, look for the install icon (⊕) in the address bar, and click Install. Both work offline and feel like native apps!"
+  },
+];
+
+function HelpModal({ onClose }) {
+  const [step, setStep] = useState(0);
+  const current = HELP_STEPS[step];
+  const isLast = step === HELP_STEPS.length - 1;
+
+  return (
+    <>
+      <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:60,animation:"fi 0.2s ease"}}/>
+      <div style={{
+        position:"fixed", top:"50%", left:"50%",
+        transform:"translate(-50%,-50%)",
+        background:"white", borderRadius:24, width:480, maxWidth:"calc(100vw - 48px)",
+        zIndex:70, boxShadow:"0 32px 80px rgba(0,0,0,0.2)",
+        display:"flex", flexDirection:"column",
+        animation:"popIn 0.3s cubic-bezier(.16,1,.3,1)"
+      }}>
+        <style>{`@keyframes popIn{from{opacity:0;transform:translate(-50%,-48%) scale(0.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}`}</style>
+
+        {/* Progress dots */}
+        <div style={{padding:"24px 28px 0", display:"flex", alignItems:"center", justifyContent:"space-between"}}>
+          <div style={{display:"flex", gap:6}}>
+            {HELP_STEPS.map((_,i)=>(
+              <div key={i} onClick={()=>setStep(i)} style={{
+                width: i===step ? 20 : 6, height:6, borderRadius:3,
+                background: i===step ? "#3B82F6" : i<step ? "#BFDBFE" : "#E2E8F0",
+                cursor:"pointer", transition:"all 0.3s"
+              }}/>
+            ))}
+          </div>
+          <button onClick={onClose} style={{background:"#F1F5F9",border:"none",borderRadius:8,width:28,height:28,cursor:"pointer",fontSize:14,color:"#64748B",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
+        </div>
+
+        {/* Content */}
+        <div style={{padding:"24px 28px 28px"}}>
+          <div style={{
+            width:56, height:56, borderRadius:16,
+            background:"linear-gradient(135deg,#EFF6FF,#DBEAFE)",
+            display:"flex", alignItems:"center", justifyContent:"center",
+            fontSize:28, marginBottom:16
+          }}>{current.icon}</div>
+          <h2 style={{fontFamily:"'Playfair Display',serif", fontSize:22, color:"#0F172A", fontWeight:700, marginBottom:12}}>{current.title}</h2>
+          <p style={{fontSize:14, color:"#475569", lineHeight:1.7, marginBottom:28}}>{current.body}</p>
+
+          <div style={{display:"flex", gap:10}}>
+            {step > 0 && (
+              <button onClick={()=>setStep(s=>s-1)} style={{padding:"11px 20px",borderRadius:10,border:"1.5px solid #E2E8F0",background:"white",color:"#64748B",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>← Back</button>
+            )}
+            <button onClick={()=>isLast ? onClose() : setStep(s=>s+1)} style={{
+              flex:1, padding:"11px", borderRadius:10, border:"none",
+              background: isLast ? "linear-gradient(135deg,#10B981,#059669)" : "linear-gradient(135deg,#3B82F6,#6366F1)",
+              color:"white", fontSize:14, cursor:"pointer",
+              fontFamily:"'DM Sans',sans-serif", fontWeight:600
+            }}>{isLast ? "Got it, let's go! ☀️" : "Next →"}</button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
 function ConfettiPop({ onDone }) {
   useEffect(() => { const t = setTimeout(onDone,1200); return ()=>clearTimeout(t); }, [onDone]);
   const pieces = Array.from({length:20},(_,i)=>({
@@ -264,6 +352,16 @@ export default function App() {
   const [selectedTask, setSelectedTask] = useState(null);
   const [myDayOrder, setMyDayOrder] = useState([]);
   const [dragId, setDragId] = useState(null);
+  const [showHelp, setShowHelp] = useState(false);
+
+  // Show welcome modal on first ever login
+  useEffect(() => {
+    const seen = localStorage.getItem("help_seen");
+    if (!seen && authState?.access_token) {
+      setShowHelp(true);
+      localStorage.setItem("help_seen", "1");
+    }
+  }, [authState]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -380,10 +478,7 @@ export default function App() {
       })
     : [...myDayTasks].sort((a,b) => ["High","Medium","Low"].indexOf(a.priority) - ["High","Medium","Low"].indexOf(b.priority));
 
-  function handleDragStart(id) {
-    setDragId(id);
-  }
-
+  function handleDragStart(id) { setDragId(id); }
   function handleDragOver(e, targetId) {
     e.preventDefault();
     if (!dragId || dragId === targetId) return;
@@ -396,10 +491,7 @@ export default function App() {
     reordered.splice(to, 0, dragId);
     setMyDayOrder(reordered);
   }
-
-  function handleDragEnd() {
-    setDragId(null);
-  }
+  function handleDragEnd() { setDragId(null); }
 
   function startFocus() { setFocusTasks(sortedMyDay); setFocusIndex(0); setAllDone(false); setView("focus"); }
 
@@ -488,6 +580,7 @@ export default function App() {
         .trow{cursor:pointer}
         .addbtn:hover{background:#E0F2FE!important}
         .stbtn:hover{transform:translateY(-1px);box-shadow:0 12px 40px rgba(59,130,246,0.35)!important}
+        .helpbtn:hover{background:#EFF6FF!important;color:#2563EB!important}
         .mo{animation:fi 0.15s ease}
         .drag-chip{transition:all 0.15s;cursor:grab}
         .drag-chip:active{cursor:grabbing}
@@ -525,7 +618,8 @@ export default function App() {
             );
           })}
         </div>
-        <div style={{padding:"12px 12px 0"}}>
+        <div style={{padding:"12px 12px 0",display:"flex",flexDirection:"column",gap:6}}>
+          <button className="helpbtn" onClick={()=>setShowHelp(true)} style={{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #E2E8F0",background:"transparent",color:"#64748B",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",textAlign:"left",transition:"all 0.15s"}}>? How to use My Day</button>
           <button onClick={()=>{localStorage.removeItem("ms_tokens");setAuthState(null);}} style={{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #E2E8F0",background:"transparent",color:"#94A3B8",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",textAlign:"left"}}>↩ Sign out</button>
         </div>
       </div>
@@ -542,7 +636,8 @@ export default function App() {
               {syncing&&<span style={{marginLeft:10,color:"#3B82F6"}}>↻ Syncing…</span>}
             </p>
           </div>
-          <div style={{display:"flex",gap:10}}>
+          <div style={{display:"flex",gap:10,alignItems:"center"}}>
+            <button onClick={()=>setShowHelp(true)} style={{width:36,height:36,borderRadius:"50%",border:"1px solid #E2E8F0",background:"white",color:"#64748B",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,transition:"all 0.15s"}} title="Help">?</button>
             <button onClick={loadAll} style={{background:"white",border:"1px solid #E2E8F0",borderRadius:12,padding:"10px 16px",fontSize:13,cursor:"pointer",color:"#64748B",fontFamily:"'DM Sans',sans-serif"}}>↻ Refresh</button>
             <button onClick={()=>setShowAddTask(true)} style={{background:"#0F172A",color:"white",border:"none",borderRadius:12,padding:"10px 20px",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600}}>+ Add Task</button>
           </div>
@@ -550,7 +645,6 @@ export default function App() {
 
         {error&&<div style={{margin:"16px 36px 0",padding:"12px 16px",background:"#FEE2E2",borderRadius:10,color:"#DC2626",fontSize:13}}>⚠️ {error} <span style={{cursor:"pointer",marginLeft:8,textDecoration:"underline"}} onClick={()=>setError(null)}>Dismiss</span></div>}
 
-        {/* My Day Strip */}
         {myDayTasks.length>0&&(
           <div style={{padding:"20px 36px 0"}}>
             <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",padding:"20px 24px",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
@@ -568,25 +662,14 @@ export default function App() {
                   const p=priorityColors[task.priority];
                   const isDragging=dragId===task.id;
                   return (
-                    <div
-                      key={task.id}
-                      className="drag-chip"
-                      draggable
+                    <div key={task.id} className="drag-chip" draggable
                       onDragStart={()=>handleDragStart(task.id)}
                       onDragOver={e=>handleDragOver(e,task.id)}
                       onDragEnd={handleDragEnd}
                       onClick={()=>setSelectedTask(task)}
-                      style={{
-                        display:"flex",alignItems:"center",gap:6,
-                        background:isDragging?"#EFF6FF":"#F8FAFC",
-                        borderRadius:8,padding:"6px 12px",fontSize:13,
-                        border:`1px solid ${isDragging?"#BFDBFE":"#E2E8F0"}`,
-                        opacity:isDragging?0.5:1,
-                        transform:isDragging?"scale(1.02)":"scale(1)",
-                      }}
-                    >
+                      style={{display:"flex",alignItems:"center",gap:6,background:isDragging?"#EFF6FF":"#F8FAFC",borderRadius:8,padding:"6px 12px",fontSize:13,border:`1px solid ${isDragging?"#BFDBFE":"#E2E8F0"}`,opacity:isDragging?0.5:1,transform:isDragging?"scale(1.02)":"scale(1)"}}>
                       <span style={{color:"#94A3B8",fontSize:11,fontWeight:600}}>{i+1}</span>
-                      <span style={{fontSize:11,color:"#CBD5E1",cursor:"grab"}}>⠿</span>
+                      <span style={{fontSize:11,color:"#CBD5E1"}}>⠿</span>
                       <span style={{width:6,height:6,borderRadius:"50%",background:p.dot,flexShrink:0}}/>
                       <span style={{color:"#334155"}}>{task.title}</span>
                     </div>
@@ -597,7 +680,6 @@ export default function App() {
           </div>
         )}
 
-        {/* Task List */}
         <div style={{padding:"20px 36px 36px"}}>
           <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
             {displayedTasks.length===0 ? (
@@ -631,6 +713,8 @@ export default function App() {
           </div>
         </div>
       </div>
+
+      {showHelp && <HelpModal onClose={()=>setShowHelp(false)}/>}
 
       {selectedTask&&(
         <TaskDetailPanel task={selectedTask} lists={lists} onClose={()=>setSelectedTask(null)} onSave={handleSaveTask} onDelete={deleteTask} getToken={getToken}/>
