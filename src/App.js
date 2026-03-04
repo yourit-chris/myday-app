@@ -56,26 +56,11 @@ const priorityColors = {
 };
 
 const HELP_STEPS = [
-  {
-    icon: "➕", title: "Adding Tasks",
-    body: "Click '+ Add Task' in the top right to create a new task. Choose which List it belongs to (these come from your Microsoft To Do lists) and set a priority level. You can also add due dates and notes by clicking any task to open its detail panel."
-  },
-  {
-    icon: "☀️", title: "Building Your My Day",
-    body: "My Day is your focused list for today. Hover over any task in the task list and click '+ My Day' to add it. Tasks you've marked in Microsoft To Do will also appear here. You can drag the chips in the My Day strip to reorder them however you like."
-  },
-  {
-    icon: "▶", title: "Focus Mode",
-    body: "Once your My Day is set, click the '▶ Start' button. The app switches to a distraction-free view showing one task at a time, including any notes and subtasks. Tap the green checkmark to complete it and sync it back to Microsoft To Do."
-  },
-  {
-    icon: "🔄", title: "Syncing with Microsoft To Do",
-    body: "My Day syncs directly with your Microsoft To Do account. Tasks you add, complete, or edit here instantly appear in the Microsoft To Do app on any device. Hit the '↻ Refresh' button at any time to pull in the latest changes."
-  },
-  {
-    icon: "📱", title: "Install as an App",
-    body: "On iPhone: Open this site in Safari, tap the Share button (box with arrow), then tap 'Add to Home Screen'. On Windows: Open in Chrome or Edge, look for the install icon (⊕) in the address bar, and click Install. Both work offline and feel like native apps!"
-  },
+  { icon:"➕", title:"Adding Tasks", body:"Tap '+ Add Task' to create a new task. Choose which List it belongs to and set a priority. You can also add due dates and notes by tapping any task to open its detail panel." },
+  { icon:"☀️", title:"Building Your My Day", body:"My Day is your focused list for today. Hover or tap any task and press '+ My Day' to add it. On desktop you can drag the chips in the My Day strip to reorder them." },
+  { icon:"▶", title:"Focus Mode", body:"Once your My Day is set, tap '▶ Start'. The app shows one task at a time with any notes and subtasks. Tap the green checkmark to complete and sync it back to Microsoft To Do." },
+  { icon:"🔄", title:"Syncing with Microsoft To Do", body:"Everything syncs directly with your Microsoft To Do account. Tasks you add, complete, or edit here appear instantly in the Microsoft To Do app on any device. Tap '↻ Refresh' to pull in the latest changes." },
+  { icon:"📱", title:"Install as an App", body:"On iPhone: Open in Safari → Share → Add to Home Screen. On Windows: Open in Chrome or Edge → click the install icon (⊕) in the address bar → Install. Both feel like native apps!" },
 ];
 
 function HelpModal({ onClose }) {
@@ -84,8 +69,8 @@ function HelpModal({ onClose }) {
   const isLast = step === HELP_STEPS.length - 1;
   return (
     <>
-      <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:60,animation:"fi 0.2s ease"}}/>
-      <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"white",borderRadius:24,width:480,maxWidth:"calc(100vw - 48px)",zIndex:70,boxShadow:"0 32px 80px rgba(0,0,0,0.2)",display:"flex",flexDirection:"column",animation:"popIn 0.3s cubic-bezier(.16,1,.3,1)"}}>
+      <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:100,animation:"fi 0.2s ease"}}/>
+      <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"white",borderRadius:24,width:480,maxWidth:"calc(100vw - 32px)",zIndex:101,boxShadow:"0 32px 80px rgba(0,0,0,0.2)",animation:"popIn 0.3s cubic-bezier(.16,1,.3,1)"}}>
         <style>{`@keyframes popIn{from{opacity:0;transform:translate(-50%,-48%) scale(0.96)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}`}</style>
         <div style={{padding:"24px 28px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <div style={{display:"flex",gap:6}}>
@@ -135,7 +120,7 @@ function LoginScreen({ onLogin }) {
       <div style={{textAlign:"center",animation:"floatIn 0.6s cubic-bezier(.16,1,.3,1) both"}}>
         <div style={{fontSize:56,marginBottom:20}}>☀️</div>
         <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:42,color:"#F8FAFC",fontWeight:700,letterSpacing:"-1px",marginBottom:12}}>My Day</h1>
-        <p style={{color:"#94A3B8",fontSize:16,marginBottom:48,maxWidth:320,margin:"0 auto 48px"}}>Your focused daily task companion, powered by Microsoft To Do</p>
+        <p style={{color:"#94A3B8",fontSize:16,maxWidth:320,margin:"0 auto 48px"}}>Your focused daily task companion, powered by Microsoft To Do</p>
         <button className="signin-btn" onClick={onLogin} style={{display:"inline-flex",alignItems:"center",gap:12,background:"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",border:"none",borderRadius:16,padding:"16px 32px",fontSize:16,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,boxShadow:"0 8px 32px rgba(59,130,246,0.25)",transition:"all 0.25s"}}>
           <svg width="20" height="20" viewBox="0 0 21 21" fill="none">
             <rect x="1" y="1" width="9" height="9" fill="#F25022"/>
@@ -214,9 +199,9 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
 
   return (
     <>
-      <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.2)",zIndex:40,animation:"fi 0.2s ease"}}/>
-      <div style={{position:"fixed",top:0,right:0,bottom:0,width:420,background:"white",zIndex:50,boxShadow:"-8px 0 48px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",animation:"slideIn 0.3s cubic-bezier(.16,1,.3,1)"}}>
-        <style>{`@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}} @keyframes fi{from{opacity:0}to{opacity:1}} .subtask-row:hover .subtask-del{opacity:1!important}`}</style>
+      <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.2)",zIndex:80,animation:"fi 0.2s ease"}}/>
+      <div style={{position:"fixed",top:0,right:0,bottom:0,width:"min(420px, 100vw)",background:"white",zIndex:90,boxShadow:"-8px 0 48px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",animation:"slideIn 0.3s cubic-bezier(.16,1,.3,1)"}}>
+        <style>{`@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}} .subtask-row:hover .subtask-del{opacity:1!important}`}</style>
         <div style={{padding:"20px 24px 16px",borderBottom:"1px solid #F1F5F9",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
           <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:18,color:"#0F172A",fontWeight:700}}>Task Details</h2>
           <button onClick={onClose} style={{background:"#F1F5F9",border:"none",borderRadius:8,width:32,height:32,cursor:"pointer",fontSize:16,color:"#64748B",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
@@ -231,13 +216,13 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
               <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Priority</label>
               <div style={{display:"flex",gap:6}}>
                 {["High","Medium","Low"].map(pv=>(
-                  <button key={pv} onClick={()=>setPriority(pv)} style={{flex:1,padding:"7px 4px",borderRadius:8,border:"none",cursor:"pointer",fontSize:11,fontWeight:600,transition:"all 0.15s",background:priority===pv?priorityColors[pv].bg:"#F8FAFC",color:priority===pv?priorityColors[pv].text:"#94A3B8"}}>{pv}</button>
+                  <button key={pv} onClick={()=>setPriority(pv)} style={{flex:1,padding:"7px 2px",borderRadius:8,border:"none",cursor:"pointer",fontSize:10,fontWeight:600,transition:"all 0.15s",background:priority===pv?priorityColors[pv].bg:"#F8FAFC",color:priority===pv?priorityColors[pv].text:"#94A3B8"}}>{pv}</button>
                 ))}
               </div>
             </div>
             <div>
               <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>My Day</label>
-              <button onClick={()=>setAddedToDay(!addedToDay)} style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:500,border:`1.5px solid ${addedToDay?"#BFDBFE":"#E2E8F0"}`,background:addedToDay?"#EFF6FF":"#F8FAFC",color:addedToDay?"#2563EB":"#94A3B8",transition:"all 0.15s"}}>{addedToDay?"☀️ In My Day":"+ My Day"}</button>
+              <button onClick={()=>setAddedToDay(!addedToDay)} style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",fontSize:12,fontWeight:500,border:`1.5px solid ${addedToDay?"#BFDBFE":"#E2E8F0"}`,background:addedToDay?"#EFF6FF":"#F8FAFC",color:addedToDay?"#2563EB":"#94A3B8",transition:"all 0.15s"}}>{addedToDay?"☀️ In My Day":"+ My Day"}</button>
             </div>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:18}}>
@@ -249,7 +234,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
             </div>
             <div>
               <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Due Date</label>
-              <input type="date" value={dueDate} onChange={e=>setDueDate(e.target.value)} style={{width:"100%",padding:"10px 12px",borderRadius:10,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer",boxSizing:"border-box"}}/>
+              <input type="date" value={dueDate} onChange={e=>setDueDate(e.target.value)} style={{width:"100%",padding:"10px 8px",borderRadius:10,fontSize:12,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer",boxSizing:"border-box"}}/>
             </div>
           </div>
           <div style={{marginBottom:18}}>
@@ -284,6 +269,57 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
   );
 }
 
+// Sidebar content shared between desktop and mobile drawer
+function SidebarContent({ user, lists, tasks, activeList, setActiveList, myDayTaskCount, onShowHelp, onSignOut, onClose }) {
+  function nav(id) { setActiveList(id); if (onClose) onClose(); }
+  return (
+    <div style={{display:"flex",flexDirection:"column",height:"100%"}}>
+      <div style={{padding:"28px 20px 16px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+        <div>
+          <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#0F172A",fontWeight:700,letterSpacing:"-0.5px"}}>My Day</div>
+          {user && (
+            <div style={{fontSize:12,color:"#94A3B8",marginTop:4,display:"flex",alignItems:"center",gap:6}}>
+              <div style={{width:20,height:20,borderRadius:"50%",background:"linear-gradient(135deg,#3B82F6,#6366F1)",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:10,fontWeight:700,flexShrink:0}}>{user.displayName?.[0]?.toUpperCase()||"U"}</div>
+              <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName||user.mail}</span>
+            </div>
+          )}
+        </div>
+        {onClose && (
+          <button onClick={onClose} style={{background:"#F1F5F9",border:"none",borderRadius:8,width:32,height:32,cursor:"pointer",fontSize:18,color:"#64748B",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>✕</button>
+        )}
+      </div>
+
+      <div style={{padding:"0 12px 4px"}}>
+        {[{id:"myday",label:"☀️ My Day",count:myDayTaskCount},{id:"all",label:"📋 All Tasks",count:tasks.length}].map(item=>(
+          <button key={item.id} onClick={()=>nav(item.id)} style={{width:"100%",textAlign:"left",padding:"10px 12px",borderRadius:10,border:"none",cursor:"pointer",fontSize:14,fontWeight:500,background:activeList===item.id?"#EFF6FF":"transparent",color:activeList===item.id?"#2563EB":"#475569",fontFamily:"'DM Sans',sans-serif",transition:"background 0.15s",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
+            <span>{item.label}</span>
+            {item.count>0&&<span style={{background:activeList===item.id?"#BFDBFE":"#F1F5F9",color:activeList===item.id?"#2563EB":"#94A3B8",borderRadius:100,padding:"1px 8px",fontSize:11,fontWeight:600}}>{item.count}</span>}
+          </button>
+        ))}
+      </div>
+
+      <div style={{padding:"12px 20px 8px",fontSize:11,color:"#94A3B8",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em"}}>Lists</div>
+
+      <div style={{padding:"0 12px",flex:1,overflowY:"auto"}}>
+        {lists.map(list=>{
+          const count=tasks.filter(t=>t.listId===list.id).length;
+          return (
+            <button key={list.id} onClick={()=>nav(list.id)} style={{width:"100%",textAlign:"left",padding:"10px 12px",borderRadius:10,border:"none",cursor:"pointer",fontSize:14,background:activeList===list.id?"#EFF6FF":"transparent",color:activeList===list.id?"#2563EB":"#475569",fontFamily:"'DM Sans',sans-serif",transition:"background 0.15s",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
+              <span>📝 {list.displayName}</span>
+              {count>0&&<span style={{background:activeList===list.id?"#BFDBFE":"#F1F5F9",color:activeList===list.id?"#2563EB":"#94A3B8",borderRadius:100,padding:"1px 8px",fontSize:11,fontWeight:600}}>{count}</span>}
+            </button>
+          );
+        })}
+      </div>
+
+      <div style={{padding:"12px 12px 0",display:"flex",flexDirection:"column",gap:6}}>
+        <button onClick={onShowHelp} style={{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #E2E8F0",background:"transparent",color:"#64748B",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",textAlign:"left"}}>? How to use My Day</button>
+        <button onClick={onSignOut} style={{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #E2E8F0",background:"transparent",color:"#94A3B8",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",textAlign:"left"}}>↩ Sign out</button>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [authState, setAuthState] = useState(()=>{ const s=localStorage.getItem("ms_tokens"); return s?JSON.parse(s):null; });
   const [user, setUser] = useState(null);
@@ -305,13 +341,11 @@ export default function App() {
   const [dragId, setDragId] = useState(null);
   const [showHelp, setShowHelp] = useState(false);
   const [focusSubtasks, setFocusSubtasks] = useState([]);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const seen = localStorage.getItem("help_seen");
-    if (!seen && authState?.access_token) {
-      setShowHelp(true);
-      localStorage.setItem("help_seen", "1");
-    }
+    if (!seen && authState?.access_token) { setShowHelp(true); localStorage.setItem("help_seen","1"); }
   }, [authState]);
 
   useEffect(() => {
@@ -338,7 +372,6 @@ export default function App() {
     loadAll();
   }, [authState]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Load subtasks for current focus task
   useEffect(() => {
     const cur = focusTasks[focusIndex];
     if (!cur || view !== "focus") return;
@@ -349,6 +382,13 @@ export default function App() {
         .catch(() => setFocusSubtasks([]))
     );
   }, [focusIndex, view]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Close menu on resize to desktop
+  useEffect(() => {
+    function onResize() { if (window.innerWidth >= 768) setMenuOpen(false); }
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   async function loadAll() {
     setLoading(true); setError(null);
@@ -432,27 +472,21 @@ export default function App() {
   const myDayTasks = tasks.filter(t => t.addedToDay && !t.done);
   const sortedMyDay = myDayOrder.length
     ? [...myDayTasks].sort((a,b) => {
-        const ai = myDayOrder.indexOf(a.id);
-        const bi = myDayOrder.indexOf(b.id);
-        if (ai === -1 && bi === -1) return 0;
-        if (ai === -1) return 1;
-        if (bi === -1) return -1;
-        return ai - bi;
+        const ai=myDayOrder.indexOf(a.id), bi=myDayOrder.indexOf(b.id);
+        if(ai===-1&&bi===-1) return 0; if(ai===-1) return 1; if(bi===-1) return -1;
+        return ai-bi;
       })
-    : [...myDayTasks].sort((a,b) => ["High","Medium","Low"].indexOf(a.priority) - ["High","Medium","Low"].indexOf(b.priority));
+    : [...myDayTasks].sort((a,b)=>["High","Medium","Low"].indexOf(a.priority)-["High","Medium","Low"].indexOf(b.priority));
 
   function handleDragStart(id) { setDragId(id); }
   function handleDragOver(e, targetId) {
     e.preventDefault();
     if (!dragId || dragId === targetId) return;
-    const ids = sortedMyDay.map(t => t.id);
-    const from = ids.indexOf(dragId);
-    const to = ids.indexOf(targetId);
-    if (from === -1 || to === -1) return;
-    const reordered = [...ids];
-    reordered.splice(from, 1);
-    reordered.splice(to, 0, dragId);
-    setMyDayOrder(reordered);
+    const ids = sortedMyDay.map(t=>t.id);
+    const from = ids.indexOf(dragId), to = ids.indexOf(targetId);
+    if (from===-1||to===-1) return;
+    const r=[...ids]; r.splice(from,1); r.splice(to,0,dragId);
+    setMyDayOrder(r);
   }
   function handleDragEnd() { setDragId(null); }
 
@@ -462,27 +496,33 @@ export default function App() {
     const task = focusTasks[focusIndex];
     setConfetti(true);
     await completeTaskInMs(task);
-    const next = focusIndex + 1;
-    if (next >= focusTasks.length) setTimeout(() => setAllDone(true), 500);
-    else setTimeout(() => setFocusIndex(next), 400);
+    const next = focusIndex+1;
+    if (next>=focusTasks.length) setTimeout(()=>setAllDone(true),500);
+    else setTimeout(()=>setFocusIndex(next),400);
   }
 
   function skipFocusTask() {
-    const next = focusIndex + 1;
-    if (next >= focusTasks.length) setAllDone(true); else setFocusIndex(next);
+    const next=focusIndex+1;
+    if(next>=focusTasks.length) setAllDone(true); else setFocusIndex(next);
   }
 
   async function toggleFocusSubtask(subtask) {
-    const cur = focusTasks[focusIndex];
-    if (!cur) return;
-    const token = await getToken();
-    await graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems/${subtask.id}`, "PATCH", { isChecked: !subtask.isChecked });
-    setFocusSubtasks(prev => prev.map(s => s.id === subtask.id ? { ...s, isChecked: !s.isChecked } : s));
+    const cur=focusTasks[focusIndex];
+    if(!cur) return;
+    const token=await getToken();
+    await graphFetch(token,`/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems/${subtask.id}`,"PATCH",{isChecked:!subtask.isChecked});
+    setFocusSubtasks(prev=>prev.map(s=>s.id===subtask.id?{...s,isChecked:!s.isChecked}:s));
   }
 
-  const displayedTasks = activeList === "myday" ? tasks.filter(t=>t.addedToDay)
-    : activeList === "all" ? tasks
+  const displayedTasks = activeList==="myday" ? tasks.filter(t=>t.addedToDay)
+    : activeList==="all" ? tasks
     : tasks.filter(t=>t.listId===activeList);
+
+  const sidebarProps = {
+    user, lists, tasks, activeList, setActiveList, myDayTaskCount: myDayTasks.length,
+    onShowHelp: ()=>{ setShowHelp(true); setMenuOpen(false); },
+    onSignOut: ()=>{ localStorage.removeItem("ms_tokens"); setAuthState(null); },
+  };
 
   if (!authState?.access_token && !new URLSearchParams(window.location.search).get("code")) {
     return <LoginScreen onLogin={async()=>{ window.location.href = await buildAuthUrl(); }}/>;
@@ -509,61 +549,50 @@ export default function App() {
           .cbtn:hover{transform:scale(1.05);box-shadow:0 0 48px rgba(16,185,129,0.5)!important}
           .sbtn:hover{opacity:0.7}
           .fsubtask:hover{background:rgba(255,255,255,0.08)!important}`}</style>
-        <div style={{width:"100%",maxWidth:560,marginBottom:44}}>
+        <div style={{width:"100%",maxWidth:560,marginBottom:36}}>
           <div style={{display:"flex",justifyContent:"space-between",marginBottom:8,fontSize:13}}>
             <span style={{color:"#64748B"}}>Task {Math.min(focusIndex+1,focusTasks.length)} of {focusTasks.length}</span>
-            <span style={{cursor:"pointer",color:"#475569"}} onClick={()=>setView("planner")}>← Back to Planner</span>
+            <span style={{cursor:"pointer",color:"#475569"}} onClick={()=>setView("planner")}>← Back</span>
           </div>
           <div style={{height:3,background:"rgba(255,255,255,0.06)",borderRadius:4,overflow:"hidden"}}>
             <div style={{height:"100%",borderRadius:4,background:"linear-gradient(90deg,#3B82F6,#10B981)",width:`${(focusIndex/focusTasks.length)*100}%`,transition:"width 0.5s ease"}}/>
           </div>
         </div>
-
         {allDone ? (
           <div style={{textAlign:"center",animation:"su 0.5s both"}}>
             <div style={{fontSize:72,marginBottom:16}}>🎉</div>
-            <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:40,marginBottom:12,fontWeight:700}}>All done!</h1>
-            <p style={{color:"#94A3B8",fontSize:18,marginBottom:40}}>Your tasks are synced back to Microsoft To Do.</p>
+            <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:36,marginBottom:12,fontWeight:700}}>All done!</h1>
+            <p style={{color:"#94A3B8",fontSize:16,marginBottom:40}}>Synced back to Microsoft To Do.</p>
             <button onClick={()=>{setView("planner");loadAll();}} style={{background:"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",border:"none",borderRadius:14,padding:"14px 36px",fontSize:16,fontFamily:"'DM Sans',sans-serif",cursor:"pointer",fontWeight:600}}>Back to Planner</button>
           </div>
         ) : (
-          <div className="fc" key={focusIndex} style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:28,padding:"44px 48px",maxWidth:560,width:"100%",textAlign:"center",position:"relative"}}>
+          <div className="fc" key={focusIndex} style={{background:"rgba(255,255,255,0.04)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:28,padding:"36px 32px",maxWidth:560,width:"100%",textAlign:"center",position:"relative"}}>
             {confetti && <ConfettiPop onDone={()=>setConfetti(false)}/>}
-
-            {/* List + priority badge */}
-            <div style={{display:"inline-flex",alignItems:"center",gap:8,marginBottom:24,background:"rgba(255,255,255,0.06)",borderRadius:100,padding:"6px 16px"}}>
+            <div style={{display:"inline-flex",alignItems:"center",gap:8,marginBottom:20,background:"rgba(255,255,255,0.06)",borderRadius:100,padding:"6px 16px"}}>
               <span style={{color:"#94A3B8",fontSize:13}}>{cur?.listName}</span>
               <span style={{background:focusPriority?.bg,color:focusPriority?.text,borderRadius:100,padding:"2px 10px",fontSize:11,fontWeight:600}}>{cur?.priority}</span>
             </div>
-
-            {/* Title */}
-            <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:30,lineHeight:1.35,marginBottom: hasNotes||hasSubtasks ? 20 : 44,fontWeight:700,letterSpacing:"-0.5px"}}>{cur?.title}</h1>
-
-            {/* Notes */}
+            <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:"clamp(22px,5vw,30px)",lineHeight:1.35,marginBottom:hasNotes||hasSubtasks?18:40,fontWeight:700,letterSpacing:"-0.5px"}}>{cur?.title}</h1>
             {hasNotes && (
-              <div style={{marginBottom:hasSubtasks?16:32,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"12px 16px",textAlign:"left",border:"1px solid rgba(255,255,255,0.06)"}}>
+              <div style={{marginBottom:hasSubtasks?14:28,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"12px 16px",textAlign:"left",border:"1px solid rgba(255,255,255,0.06)"}}>
                 <p style={{fontSize:11,fontWeight:600,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:6}}>Notes</p>
                 <p style={{color:"#94A3B8",fontSize:14,lineHeight:1.7,margin:0}}>{cur.msTask.body.content}</p>
               </div>
             )}
-
-            {/* Subtasks */}
             {hasSubtasks && (
-              <div style={{marginBottom:32,textAlign:"left"}}>
+              <div style={{marginBottom:28,textAlign:"left"}}>
                 <p style={{fontSize:11,fontWeight:600,color:"#475569",textTransform:"uppercase",letterSpacing:"0.06em",marginBottom:8}}>Subtasks</p>
                 {focusSubtasks.map(s=>(
                   <div key={s.id} className="fsubtask" onClick={()=>toggleFocusSubtask(s)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,marginBottom:4,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer",transition:"background 0.15s"}}>
                     <div style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:`2px solid ${s.isChecked?"#10B981":"rgba(255,255,255,0.2)"}`,background:s.isChecked?"#10B981":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"white",transition:"all 0.15s"}}>{s.isChecked&&"✓"}</div>
-                    <span style={{fontSize:13,color:s.isChecked?"#475569":"#CBD5E1",textDecoration:s.isChecked?"line-through":"none",transition:"all 0.15s"}}>{s.displayName}</span>
+                    <span style={{fontSize:13,color:s.isChecked?"#475569":"#CBD5E1",textDecoration:s.isChecked?"line-through":"none"}}>{s.displayName}</span>
                   </div>
                 ))}
               </div>
             )}
-
-            {/* Complete button */}
-            <button className="cbtn" onClick={completeFocusTask} style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",border:"none",fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 16px",transition:"all 0.2s",boxShadow:"0 8px 32px rgba(16,185,129,0.2)"}}>✓</button>
-            <p style={{color:"#475569",fontSize:13,marginBottom:20}}>Tap to complete & sync</p>
-            {focusIndex < focusTasks.length-1 && (
+            <button className="cbtn" onClick={completeFocusTask} style={{width:68,height:68,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",border:"none",fontSize:28,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 14px",transition:"all 0.2s",boxShadow:"0 8px 32px rgba(16,185,129,0.2)"}}>✓</button>
+            <p style={{color:"#475569",fontSize:13,marginBottom:16}}>Tap to complete & sync</p>
+            {focusIndex<focusTasks.length-1&&(
               <button className="sbtn" onClick={skipFocusTask} style={{background:"transparent",border:"1px solid rgba(255,255,255,0.1)",color:"#475569",borderRadius:10,padding:"8px 20px",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"opacity 0.2s"}}>Skip for now →</button>
             )}
           </div>
@@ -574,7 +603,8 @@ export default function App() {
 
   return (
     <div style={{minHeight:"100vh",background:"#F8FAFC",display:"flex",fontFamily:"'DM Sans',sans-serif"}}>
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
         *{box-sizing:border-box;margin:0;padding:0}
         .scat:hover{background:#F1F5F9!important}
         .trow:hover .tactions{opacity:1!important}
@@ -582,54 +612,52 @@ export default function App() {
         .trow{cursor:pointer}
         .addbtn:hover{background:#E0F2FE!important}
         .stbtn:hover{transform:translateY(-1px);box-shadow:0 12px 40px rgba(59,130,246,0.35)!important}
-        .helpbtn:hover{background:#EFF6FF!important;color:#2563EB!important}
         .mo{animation:fi 0.15s ease}
         .drag-chip{transition:all 0.15s;cursor:grab}
         .drag-chip:active{cursor:grabbing}
         @keyframes fi{from{opacity:0}to{opacity:1}}
-        input:focus,select:focus,textarea:focus{outline:2px solid #BFDBFE!important}`}</style>
+        @keyframes slideInLeft{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+        input:focus,select:focus,textarea:focus{outline:2px solid #BFDBFE!important}
+        @media(min-width:768px){.desktop-sidebar{display:flex!important}.mobile-header{display:none!important}}
+        @media(max-width:767px){.desktop-sidebar{display:none!important}.mobile-header{display:flex!important}}
+      `}</style>
 
-      {/* Sidebar */}
-      <div style={{width:248,background:"white",borderRight:"1px solid #E2E8F0",display:"flex",flexDirection:"column",padding:"0 0 24px",position:"sticky",top:0,height:"100vh",flexShrink:0}}>
-        <div style={{padding:"28px 20px 16px"}}>
-          <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#0F172A",fontWeight:700,letterSpacing:"-0.5px"}}>My Day</div>
-          {user && (
-            <div style={{fontSize:12,color:"#94A3B8",marginTop:4,display:"flex",alignItems:"center",gap:6}}>
-              <div style={{width:20,height:20,borderRadius:"50%",background:"linear-gradient(135deg,#3B82F6,#6366F1)",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:10,fontWeight:700,flexShrink:0}}>{user.displayName?.[0]?.toUpperCase()||"U"}</div>
-              <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.displayName||user.mail}</span>
-            </div>
-          )}
-        </div>
-        <div style={{padding:"0 12px 4px"}}>
-          {[{id:"myday",label:"☀️ My Day",count:myDayTasks.length},{id:"all",label:"📋 All Tasks",count:tasks.length}].map(item=>(
-            <button key={item.id} className="scat" onClick={()=>setActiveList(item.id)} style={{width:"100%",textAlign:"left",padding:"10px 12px",borderRadius:10,border:"none",cursor:"pointer",fontSize:14,fontWeight:500,background:activeList===item.id?"#EFF6FF":"transparent",color:activeList===item.id?"#2563EB":"#475569",fontFamily:"'DM Sans',sans-serif",transition:"background 0.15s",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
-              <span>{item.label}</span>
-              {item.count>0&&<span style={{background:activeList===item.id?"#BFDBFE":"#F1F5F9",color:activeList===item.id?"#2563EB":"#94A3B8",borderRadius:100,padding:"1px 8px",fontSize:11,fontWeight:600}}>{item.count}</span>}
-            </button>
-          ))}
-        </div>
-        <div style={{padding:"12px 20px 8px",fontSize:11,color:"#94A3B8",fontWeight:600,textTransform:"uppercase",letterSpacing:"0.08em"}}>Lists</div>
-        <div style={{padding:"0 12px",flex:1,overflowY:"auto"}}>
-          {lists.map(list=>{
-            const count=tasks.filter(t=>t.listId===list.id).length;
-            return (
-              <button key={list.id} className="scat" onClick={()=>setActiveList(list.id)} style={{width:"100%",textAlign:"left",padding:"10px 12px",borderRadius:10,border:"none",cursor:"pointer",fontSize:14,background:activeList===list.id?"#EFF6FF":"transparent",color:activeList===list.id?"#2563EB":"#475569",fontFamily:"'DM Sans',sans-serif",transition:"background 0.15s",display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:2}}>
-                <span>📝 {list.displayName}</span>
-                {count>0&&<span style={{background:activeList===list.id?"#BFDBFE":"#F1F5F9",color:activeList===list.id?"#2563EB":"#94A3B8",borderRadius:100,padding:"1px 8px",fontSize:11,fontWeight:600}}>{count}</span>}
-              </button>
-            );
-          })}
-        </div>
-        <div style={{padding:"12px 12px 0",display:"flex",flexDirection:"column",gap:6}}>
-          <button className="helpbtn" onClick={()=>setShowHelp(true)} style={{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #E2E8F0",background:"transparent",color:"#64748B",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",textAlign:"left",transition:"all 0.15s"}}>? How to use My Day</button>
-          <button onClick={()=>{localStorage.removeItem("ms_tokens");setAuthState(null);}} style={{width:"100%",padding:"9px 12px",borderRadius:10,border:"1px solid #E2E8F0",background:"transparent",color:"#94A3B8",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",textAlign:"left"}}>↩ Sign out</button>
-        </div>
+      {/* Desktop sidebar */}
+      <div className="desktop-sidebar" style={{width:248,background:"white",borderRight:"1px solid #E2E8F0",flexDirection:"column",position:"sticky",top:0,height:"100vh",flexShrink:0}}>
+        <SidebarContent {...sidebarProps}/>
       </div>
 
-      {/* Main */}
-      <div style={{flex:1,display:"flex",flexDirection:"column"}}>
+      {/* Mobile drawer overlay */}
+      {menuOpen && (
+        <>
+          <div onClick={()=>setMenuOpen(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.4)",zIndex:70,animation:"fi 0.2s ease"}}/>
+          <div style={{position:"fixed",top:0,left:0,bottom:0,width:280,background:"white",zIndex:71,boxShadow:"8px 0 48px rgba(0,0,0,0.15)",animation:"slideInLeft 0.3s cubic-bezier(.16,1,.3,1)"}}>
+            <SidebarContent {...sidebarProps} onClose={()=>setMenuOpen(false)}/>
+          </div>
+        </>
+      )}
+
+      {/* Main content */}
+      <div style={{flex:1,display:"flex",flexDirection:"column",minWidth:0}}>
+
+        {/* Mobile header */}
+        <div className="mobile-header" style={{padding:"16px 20px",background:"white",borderBottom:"1px solid #E2E8F0",alignItems:"center",justifyContent:"space-between",position:"sticky",top:0,zIndex:10}}>
+          <button onClick={()=>setMenuOpen(true)} style={{background:"none",border:"none",cursor:"pointer",padding:6,display:"flex",flexDirection:"column",gap:5}}>
+            <div style={{width:22,height:2,background:"#475569",borderRadius:2}}/>
+            <div style={{width:22,height:2,background:"#475569",borderRadius:2}}/>
+            <div style={{width:22,height:2,background:"#475569",borderRadius:2}}/>
+          </button>
+          <span style={{fontFamily:"'Playfair Display',serif",fontSize:20,color:"#0F172A",fontWeight:700}}>
+            {activeList==="myday"?"☀️ My Day":activeList==="all"?"📋 All Tasks":lists.find(l=>l.id===activeList)?.displayName||"My Day"}
+          </span>
+          <button onClick={()=>setShowAddTask(true)} style={{background:"#0F172A",color:"white",border:"none",borderRadius:10,padding:"8px 14px",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600}}>+ Add</button>
+        </div>
+
+        {/* Desktop header */}
+        <div style={{padding:"28px 36px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between"}} className="mobile-header" >
+        </div>
         <div style={{padding:"28px 36px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between"}}>
-          <div>
+          <div className="desktop-sidebar" style={{display:"block",position:"static",width:"auto",height:"auto",background:"transparent",border:"none",flexShrink:1}}>
             <h1 style={{fontFamily:"'Playfair Display',serif",fontSize:30,color:"#0F172A",fontWeight:700,letterSpacing:"-0.5px"}}>
               {activeList==="myday"?"My Day":activeList==="all"?"All Tasks":lists.find(l=>l.id===activeList)?.displayName}
             </h1>
@@ -638,28 +666,34 @@ export default function App() {
               {syncing&&<span style={{marginLeft:10,color:"#3B82F6"}}>↻ Syncing…</span>}
             </p>
           </div>
-          <div style={{display:"flex",gap:10,alignItems:"center"}}>
+          <div style={{display:"flex",gap:10,alignItems:"center",flexShrink:0}} className="desktop-sidebar" >
             <button onClick={()=>setShowHelp(true)} style={{width:36,height:36,borderRadius:"50%",border:"1px solid #E2E8F0",background:"white",color:"#64748B",fontSize:15,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700}} title="Help">?</button>
             <button onClick={loadAll} style={{background:"white",border:"1px solid #E2E8F0",borderRadius:12,padding:"10px 16px",fontSize:13,cursor:"pointer",color:"#64748B",fontFamily:"'DM Sans',sans-serif"}}>↻ Refresh</button>
             <button onClick={()=>setShowAddTask(true)} style={{background:"#0F172A",color:"white",border:"none",borderRadius:12,padding:"10px 20px",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600}}>+ Add Task</button>
           </div>
         </div>
 
-        {error&&<div style={{margin:"16px 36px 0",padding:"12px 16px",background:"#FEE2E2",borderRadius:10,color:"#DC2626",fontSize:13}}>⚠️ {error} <span style={{cursor:"pointer",marginLeft:8,textDecoration:"underline"}} onClick={()=>setError(null)}>Dismiss</span></div>}
+        {error&&<div style={{margin:"16px 20px 0",padding:"12px 16px",background:"#FEE2E2",borderRadius:10,color:"#DC2626",fontSize:13}}>⚠️ {error} <span style={{cursor:"pointer",marginLeft:8,textDecoration:"underline"}} onClick={()=>setError(null)}>Dismiss</span></div>}
 
+        {/* Mobile refresh + date bar */}
+        <div className="mobile-header" style={{padding:"10px 20px 0",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <p style={{color:"#94A3B8",fontSize:12}}>{new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}{syncing&&<span style={{marginLeft:8,color:"#3B82F6"}}>↻</span>}</p>
+          <button onClick={loadAll} style={{background:"white",border:"1px solid #E2E8F0",borderRadius:8,padding:"6px 12px",fontSize:12,cursor:"pointer",color:"#64748B",fontFamily:"'DM Sans',sans-serif"}}>↻ Refresh</button>
+        </div>
+
+        {/* My Day strip */}
         {myDayTasks.length>0&&(
-          <div style={{padding:"20px 36px 0"}}>
-            <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",padding:"20px 24px",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
-              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <span style={{fontSize:18}}>☀️</span>
-                  <span style={{fontSize:15,fontWeight:600,color:"#0F172A"}}>Ready to focus</span>
+          <div style={{padding:"16px 20px 0"}}>
+            <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",padding:"16px 20px",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
+                  <span style={{fontSize:16}}>☀️</span>
+                  <span style={{fontSize:14,fontWeight:600,color:"#0F172A"}}>Ready to focus</span>
                   <span style={{background:"#EFF6FF",color:"#3B82F6",borderRadius:100,padding:"1px 10px",fontSize:12,fontWeight:600}}>{myDayTasks.length}</span>
-                  <span style={{fontSize:11,color:"#94A3B8"}}>· drag to reorder</span>
                 </div>
-                <button className="stbtn" onClick={startFocus} style={{background:"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",border:"none",borderRadius:10,padding:"9px 22px",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,transition:"all 0.2s",boxShadow:"0 4px 20px rgba(59,130,246,0.2)"}}>▶ Start</button>
+                <button className="stbtn" onClick={startFocus} style={{background:"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",border:"none",borderRadius:10,padding:"8px 18px",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,transition:"all 0.2s",boxShadow:"0 4px 20px rgba(59,130,246,0.2)",flexShrink:0}}>▶ Start</button>
               </div>
-              <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
+              <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                 {sortedMyDay.map((task,i)=>{
                   const p=priorityColors[task.priority];
                   const isDragging=dragId===task.id;
@@ -669,11 +703,11 @@ export default function App() {
                       onDragOver={e=>handleDragOver(e,task.id)}
                       onDragEnd={handleDragEnd}
                       onClick={()=>setSelectedTask(task)}
-                      style={{display:"flex",alignItems:"center",gap:6,background:isDragging?"#EFF6FF":"#F8FAFC",borderRadius:8,padding:"6px 12px",fontSize:13,border:`1px solid ${isDragging?"#BFDBFE":"#E2E8F0"}`,opacity:isDragging?0.5:1,transform:isDragging?"scale(1.02)":"scale(1)"}}>
-                      <span style={{color:"#94A3B8",fontSize:11,fontWeight:600}}>{i+1}</span>
-                      <span style={{fontSize:11,color:"#CBD5E1"}}>⠿</span>
-                      <span style={{width:6,height:6,borderRadius:"50%",background:p.dot,flexShrink:0}}/>
-                      <span style={{color:"#334155"}}>{task.title}</span>
+                      style={{display:"flex",alignItems:"center",gap:5,background:isDragging?"#EFF6FF":"#F8FAFC",borderRadius:8,padding:"5px 10px",fontSize:12,border:`1px solid ${isDragging?"#BFDBFE":"#E2E8F0"}`,opacity:isDragging?0.5:1}}>
+                      <span style={{color:"#94A3B8",fontSize:10,fontWeight:600}}>{i+1}</span>
+                      <span style={{fontSize:10,color:"#CBD5E1"}}>⠿</span>
+                      <span style={{width:5,height:5,borderRadius:"50%",background:p.dot,flexShrink:0}}/>
+                      <span style={{color:"#334155",maxWidth:140,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{task.title}</span>
                     </div>
                   );
                 })}
@@ -682,29 +716,30 @@ export default function App() {
           </div>
         )}
 
-        <div style={{padding:"20px 36px 36px"}}>
+        {/* Task list */}
+        <div style={{padding:"16px 20px 40px"}}>
           <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
             {displayedTasks.length===0 ? (
               <div style={{padding:"52px 24px",textAlign:"center",color:"#94A3B8"}}>
                 <div style={{fontSize:36,marginBottom:12}}>✨</div>
-                <p style={{fontSize:15}}>{activeList==="myday"?"No tasks in My Day — hover a task and click '+ My Day'":"No tasks here yet."}</p>
+                <p style={{fontSize:15}}>{activeList==="myday"?"No tasks in My Day yet — tap a task and press '+ My Day'":"No tasks here yet."}</p>
               </div>
             ) : displayedTasks.map((task,i)=>{
               const p=priorityColors[task.priority];
               return (
-                <div key={task.id} className="trow" onClick={()=>setSelectedTask(task)} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 20px",borderBottom:i<displayedTasks.length-1?"1px solid #F1F5F9":"none",transition:"background 0.15s",background:"white"}}>
-                  <div onClick={e=>{e.stopPropagation();completeTaskInMs(task);}} style={{width:20,height:20,borderRadius:"50%",border:"2px solid #CBD5E1",background:"transparent",flexShrink:0,cursor:"pointer",transition:"all 0.15s"}}/>
+                <div key={task.id} className="trow" onClick={()=>setSelectedTask(task)} style={{display:"flex",alignItems:"center",gap:12,padding:"14px 16px",borderBottom:i<displayedTasks.length-1?"1px solid #F1F5F9":"none",transition:"background 0.15s",background:"white"}}>
+                  <div onClick={e=>{e.stopPropagation();completeTaskInMs(task);}} style={{width:22,height:22,borderRadius:"50%",border:"2px solid #CBD5E1",background:"transparent",flexShrink:0,cursor:"pointer",transition:"all 0.15s"}}/>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:14,color:"#1E293B",fontWeight:450}}>{task.title}</div>
-                    <div style={{fontSize:12,color:"#94A3B8",marginTop:2,display:"flex",gap:8}}>
+                    <div style={{fontSize:14,color:"#1E293B",fontWeight:450,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{task.title}</div>
+                    <div style={{fontSize:12,color:"#94A3B8",marginTop:2,display:"flex",gap:8,flexWrap:"wrap"}}>
                       <span>{task.listName}</span>
                       {task.msTask?.dueDateTime&&<span style={{color:"#F59E0B"}}>📅 {new Date(task.msTask.dueDateTime.dateTime).toLocaleDateString()}</span>}
                     </div>
                   </div>
-                  <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
-                    <span style={{fontSize:11,fontWeight:600,background:p.bg,color:p.text,borderRadius:100,padding:"2px 10px"}}>{task.priority}</span>
+                  <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
+                    <span style={{fontSize:11,fontWeight:600,background:p.bg,color:p.text,borderRadius:100,padding:"2px 8px"}}>{task.priority}</span>
                     <div className="tactions" style={{display:"flex",gap:4,opacity:0,transition:"opacity 0.15s"}}>
-                      <button className="addbtn" onClick={e=>{e.stopPropagation();toggleMyDay(task);}} style={{background:task.addedToDay?"#EFF6FF":"transparent",color:task.addedToDay?"#2563EB":"#94A3B8",border:`1px solid ${task.addedToDay?"#BFDBFE":"#E2E8F0"}`,borderRadius:7,padding:"4px 10px",fontSize:11,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"background 0.15s"}}>
+                      <button className="addbtn" onClick={e=>{e.stopPropagation();toggleMyDay(task);}} style={{background:task.addedToDay?"#EFF6FF":"transparent",color:task.addedToDay?"#2563EB":"#94A3B8",border:`1px solid ${task.addedToDay?"#BFDBFE":"#E2E8F0"}`,borderRadius:7,padding:"4px 8px",fontSize:11,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",transition:"background 0.15s",whiteSpace:"nowrap"}}>
                         {task.addedToDay?"☀️ In My Day":"+ My Day"}
                       </button>
                     </div>
@@ -723,23 +758,23 @@ export default function App() {
       )}
 
       {showAddTask&&(
-        <div className="mo" onClick={()=>setShowAddTask(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.3)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50}}>
-          <div onClick={e=>e.stopPropagation()} style={{background:"white",borderRadius:20,padding:32,width:400,boxShadow:"0 24px 80px rgba(0,0,0,0.15)"}}>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#0F172A",marginBottom:24}}>New Task</h2>
-            <div style={{marginBottom:16}}>
+        <div className="mo" onClick={()=>setShowAddTask(false)} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.3)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:50,padding:16}}>
+          <div onClick={e=>e.stopPropagation()} style={{background:"white",borderRadius:20,padding:28,width:"100%",maxWidth:400,boxShadow:"0 24px 80px rgba(0,0,0,0.15)"}}>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#0F172A",marginBottom:20}}>New Task</h2>
+            <div style={{marginBottom:14}}>
               <label style={{fontSize:12,fontWeight:600,color:"#64748B",textTransform:"uppercase",letterSpacing:"0.05em",display:"block",marginBottom:6}}>Task name</label>
               <input value={newTask.title} onChange={e=>setNewTask({...newTask,title:e.target.value})} onKeyDown={e=>e.key==="Enter"&&addTask()} placeholder="What needs to be done?" autoFocus style={{width:"100%",padding:"10px 14px",borderRadius:10,fontSize:14,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B"}}/>
             </div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:24}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:20}}>
               <div>
                 <label style={{fontSize:12,fontWeight:600,color:"#64748B",textTransform:"uppercase",letterSpacing:"0.05em",display:"block",marginBottom:6}}>List</label>
-                <select value={newTask.listId} onChange={e=>setNewTask({...newTask,listId:e.target.value})} style={{width:"100%",padding:"10px 14px",borderRadius:10,fontSize:14,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer"}}>
+                <select value={newTask.listId} onChange={e=>setNewTask({...newTask,listId:e.target.value})} style={{width:"100%",padding:"10px 12px",borderRadius:10,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer"}}>
                   {lists.map(l=><option key={l.id} value={l.id}>{l.displayName}</option>)}
                 </select>
               </div>
               <div>
                 <label style={{fontSize:12,fontWeight:600,color:"#64748B",textTransform:"uppercase",letterSpacing:"0.05em",display:"block",marginBottom:6}}>Priority</label>
-                <select value={newTask.priority} onChange={e=>setNewTask({...newTask,priority:e.target.value})} style={{width:"100%",padding:"10px 14px",borderRadius:10,fontSize:14,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer"}}>
+                <select value={newTask.priority} onChange={e=>setNewTask({...newTask,priority:e.target.value})} style={{width:"100%",padding:"10px 12px",borderRadius:10,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer"}}>
                   {["High","Medium","Low"].map(p=><option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
