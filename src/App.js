@@ -528,6 +528,21 @@ export default function App() {
   if (view === "focus") {
     const cur = focusTasks[focusIndex];
     const focusPriority = cur ? priorityColors[cur.priority] : null;
+    const [focusSubtasks, setFocusSubtasks] = useState([]);
+useEffect(() => {
+  if (!cur) return;
+  setFocusSubtasks([]);
+  getToken().then(token =>
+    graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems`)
+      .then(data => setFocusSubtasks(data?.value || []))
+  );
+}, [cur?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
+async function toggleFocusSubtask(subtask) {
+  const token = await getToken();
+  await graphFetch(token, `/me/todo/lists/${cur.listId}/tasks/${cur.id}/checklistItems/${subtask.id}`, "PATCH", { isChecked: !subtask.isChecked });
+  setFocusSubtasks(prev => prev.map(s => s.id === subtask.id ? { ...s, isChecked: !s.isChecked } : s));
+}
     return (
       <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",padding:24}}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -559,6 +574,20 @@ export default function App() {
               <span style={{background:focusPriority?.bg,color:focusPriority?.text,borderRadius:100,padding:"2px 10px",fontSize:11,fontWeight:600}}>{cur?.priority}</span>
             </div>
             <h1 style={{fontFamily:"'Playfair Display',serif",color:"#F8FAFC",fontSize:32,lineHeight:1.35,marginBottom:52,fontWeight:700,letterSpacing:"-0.5px"}}>{cur?.title}</h1>
+            {cur?.msTask?.body?.content && (
+            <p style={{color:"#94A3B8",fontSize:14,lineHeight:1.7,marginBottom:focusSubtasks.length?20:36,background:"rgba(255,255,255,0.04)",borderRadius:12,padding:"12px 16px",textAlign:"left"}}>{cur.msTask.body.content}</p>
+          )}
+          
+          {focusSubtasks.length>0 && (
+            <div style={{marginBottom:36,textAlign:"left"}}>
+              {focusSubtasks.map(s=>(
+                <div key={s.id} onClick={()=>toggleFocusSubtask(s)} style={{display:"flex",alignItems:"center",gap:10,padding:"8px 12px",borderRadius:8,marginBottom:4,background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.06)",cursor:"pointer"}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",flexShrink:0,border:`2px solid ${s.isChecked?"#10B981":"rgba(255,255,255,0.2)"}`,background:s.isChecked?"#10B981":"transparent",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"white"}}>{s.isChecked&&"✓"}</div>
+                  <span style={{fontSize:13,color:s.isChecked?"#475569":"#CBD5E1",textDecoration:s.isChecked?"line-through":"none"}}>{s.displayName}</span>
+                </div>
+              ))}
+            </div>
+          )}
             <button className="cbtn" onClick={completeFocusTask} style={{width:72,height:72,borderRadius:"50%",background:"linear-gradient(135deg,#10B981,#059669)",border:"none",fontSize:30,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",margin:"0 auto 20px",transition:"all 0.2s",boxShadow:"0 8px 32px rgba(16,185,129,0.2)"}}>✓</button>
             <p style={{color:"#475569",fontSize:13,marginBottom:24}}>Tap to complete & sync</p>
             {focusIndex < focusTasks.length-1 && (
