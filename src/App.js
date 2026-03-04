@@ -182,7 +182,7 @@ export default function App() {
           localStorage.setItem("ms_tokens", JSON.stringify(tokens));
           setAuthState(tokens);
         } else {
-          setError("Authentication failed. Please try again.");
+          setError("Auth failed: " + JSON.stringify(tokens));
         }
       });
     }
