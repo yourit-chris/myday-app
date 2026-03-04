@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
+
+// ─── Microsoft Auth Config ────────────────────────────────────────────────────
 const CLIENT_ID = "637cb567-14f5-41ce-a1af-1ff2c6276418";
 const TENANT_ID = "common";
 const REDIRECT_URI = "https://myday-app-pi.vercel.app";
@@ -7,19 +9,20 @@ const AUTH_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/aut
 const TOKEN_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 const GRAPH = "https://graph.microsoft.com/v1.0";
 
+// ─── PKCE Helpers ─────────────────────────────────────────────────────────────
 function generateCodeVerifier() {
   const array = new Uint8Array(32);
   window.crypto.getRandomValues(array);
   return btoa(String.fromCharCode(...array))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 async function generateCodeChallenge(verifier) {
   const encoder = new TextEncoder();
   const data = encoder.encode(verifier);
-  const digest = await window.crypto.subtle.digest('SHA-256', data);
+  const digest = await window.crypto.subtle.digest("SHA-256", data);
   return btoa(String.fromCharCode(...new Uint8Array(digest)))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
 }
 
 async function buildAuthUrl() {
@@ -54,9 +57,7 @@ async function exchangeCode(code) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
   });
-  const data = await res.json();
-  console.log("TOKEN RESPONSE:", data);
-  return data;
+  return res.json();
 }
 
 async function refreshToken(refresh) {
@@ -86,6 +87,47 @@ async function graphFetch(token, path, method = "GET", body = null) {
   if (res.status === 204) return null;
   return res.json();
 }
+
+// ─── Priority mapping ─────────────────────────────────────────────────────────
+const importanceMap = { high: "High", normal: "Medium", low: "Low" };
+const reverseImportance = { High: "high", Medium: "normal", Low: "low" };
+const priorityColors = {
+  High: { bg: "#FEE2E2", text: "#DC2626", dot: "#EF4444" },
+  Medium: { bg: "#FEF3C7", text: "#D97706", dot: "#F59E0B" },
+  Low: { bg: "#DCFCE7", text: "#16A34A", dot: "#22C55E" },
+};
+
+// ─── Confetti ─────────────────────────────────────────────────────────────────
+function ConfettiPop({ onDone }) {
+  useEffect(() => {
+    const t = setTimeout(onDone, 1200);
+    return () => clearTimeout(t);
+  }, [onDone]);
+  const pieces = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    x: (Math.random() - 0.5) * 220,
+    y: -(Math.random() * 130 + 40),
+    color: ["#3B82F6","#10B981","#F59E0B","#8B5CF6","#EC4899","#F97316"][i % 6],
+    size: Math.random() * 9 + 4,
+    round: Math.random() > 0.5,
+  }));
+  return (
+    <div style={{ position:"absolute", top:"50%", left:"50%", pointerEvents:"none", zIndex:100 }}>
+      {pieces.map(p => (
+        <div key={p.id} style={{
+          position:"absolute", width:p.size, height:p.size,
+          background:p.color, borderRadius: p.round ? "50%" : "2px",
+          left: p.x, top: p.y,
+          animation: "cfetti 1.1s ease-out forwards",
+          opacity: 0,
+          animationDelay: `${Math.random()*0.15}s`
+        }} />
+      ))}
+      <style>{`@keyframes cfetti{0%{opacity:1;transform:translate(0,0) rotate(0deg)}100%{opacity:0;transform:translate(0,30px) rotate(480deg)}}`}</style>
+    </div>
+  );
+}
+
 // ─── Login Screen ─────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }) {
   return (
@@ -155,13 +197,13 @@ export default function App() {
   const [newTask, setNewTask] = useState({ title:"", listId:"", priority:"Medium" });
 
   // ── Handle OAuth redirect ──
-useEffect(() => {
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    const error = params.get("error");
-    const errorDesc = params.get("error_description");
-    if (error) {
-      setError("Microsoft error: " + error + " - " + errorDesc);
+    const err = params.get("error");
+    const errDesc = params.get("error_description");
+    if (err) {
+      setError("Microsoft error: " + err + " - " + errDesc);
       return;
     }
     if (code) {
@@ -175,15 +217,12 @@ useEffect(() => {
         }
       });
     }
-  }, []);;
+  }, []);
 
-  // ── Get valid token (refresh if needed) ──
+  // ── Get valid token ──
   const getToken = useCallback(async () => {
     if (!authState) return null;
-    const expiry = authState.expires_in
-      ? Date.now() + authState.expires_in * 1000
-      : 0;
-    if (authState.refresh_token && Date.now() > expiry - 60000) {
+    if (authState.refresh_token) {
       const fresh = await refreshToken(authState.refresh_token);
       if (fresh.access_token) {
         localStorage.setItem("ms_tokens", JSON.stringify(fresh));
@@ -197,25 +236,19 @@ useEffect(() => {
   // ── Load data after auth ──
   useEffect(() => {
     if (!authState?.access_token) return;
-    loadAll(); // eslint-disable-line react-hooks/exhaustive-deps
-  }, [authState]);
-  
+    loadAll();
+  }, [authState]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function loadAll() {
     setLoading(true);
     setError(null);
     try {
       const token = await getToken();
-
-      // Get user profile
       const me = await graphFetch(token, "/me");
       setUser(me);
-
-      // Get task lists
       const listsData = await graphFetch(token, "/me/todo/lists");
       const fetchedLists = listsData?.value || [];
       setLists(fetchedLists);
-
-      // Get all tasks from all lists
       const allTasks = [];
       for (const list of fetchedLists) {
         const tasksData = await graphFetch(token, `/me/todo/lists/${list.id}/tasks?$top=100`);
@@ -279,7 +312,6 @@ useEffect(() => {
     try {
       const token = await getToken();
       const newVal = !task.addedToDay;
-      // MS To Do uses reminderDateTime for My Day — simplest approach is isReminderOn toggle
       await graphFetch(token, `/me/todo/lists/${task.listId}/tasks/${task.id}`, "PATCH", {
         isReminderOn: newVal,
       });
@@ -326,7 +358,6 @@ useEffect(() => {
     else setFocusIndex(next);
   }
 
-  // ── Filtered task list ──
   const displayedTasks = activeList === "myday"
     ? tasks.filter(t => t.addedToDay)
     : activeList === "all"
@@ -335,7 +366,7 @@ useEffect(() => {
 
   // ─────────────────────────────────────────────────────────────────────────────
   if (!authState?.access_token && !new URLSearchParams(window.location.search).get("code")) {
-    return <LoginScreen onLogin={async () => { window.location.href = await buildAuthUrl(); }} />
+    return <LoginScreen onLogin={async () => { window.location.href = await buildAuthUrl(); }} />;
   }
 
   if (loading) {
@@ -549,8 +580,6 @@ useEffect(() => {
 
       {/* Main */}
       <div style={{ flex:1, display:"flex", flexDirection:"column" }}>
-
-        {/* Header */}
         <div style={{ padding:"28px 36px 0", display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
           <div>
             <h1 style={{ fontFamily:"'Playfair Display', serif", fontSize:30, color:"#0F172A", fontWeight:700, letterSpacing:"-0.5px" }}>
@@ -575,14 +604,12 @@ useEffect(() => {
           </div>
         </div>
 
-        {/* Error */}
         {error && (
           <div style={{ margin:"16px 36px 0", padding:"12px 16px", background:"#FEE2E2", borderRadius:10, color:"#DC2626", fontSize:13 }}>
             ⚠️ {error} <span style={{ cursor:"pointer", marginLeft:8, textDecoration:"underline" }} onClick={() => setError(null)}>Dismiss</span>
           </div>
         )}
 
-        {/* My Day Strip */}
         {myDayTasks.length > 0 && (
           <div style={{ padding:"20px 36px 0" }}>
             <div style={{
@@ -624,7 +651,6 @@ useEffect(() => {
           </div>
         )}
 
-        {/* Task List */}
         <div style={{ padding:"20px 36px 36px" }}>
           <div style={{
             background:"white", borderRadius:20, border:"1px solid #E2E8F0",
@@ -648,12 +674,11 @@ useEffect(() => {
                 }}>
                   <div style={{
                     width:20, height:20, borderRadius:"50%",
-                    border:`2px solid #CBD5E1`, background:"transparent",
+                    border:"2px solid #CBD5E1", background:"transparent",
                     flexShrink:0, display:"flex", alignItems:"center", justifyContent:"center",
                     cursor:"pointer", fontSize:11, color:"white",
                     transition:"all 0.15s"
-                  }} onClick={() => completeTaskInMs(task)}>
-                  </div>
+                  }} onClick={() => completeTaskInMs(task)} />
 
                   <div style={{ flex:1, minWidth:0 }}>
                     <div style={{ fontSize:14, color:"#1E293B", fontWeight:450 }}>{task.title}</div>
@@ -665,7 +690,6 @@ useEffect(() => {
                       fontSize:11, fontWeight:600, background:p.bg, color:p.text,
                       borderRadius:100, padding:"2px 10px"
                     }}>{task.priority}</span>
-
                     <div className="tactions" style={{ display:"flex", gap:4, opacity:0, transition:"opacity 0.15s" }}>
                       <button className="addbtn" onClick={() => toggleMyDay(task)} style={{
                         background: task.addedToDay ? "#EFF6FF" : "transparent",
@@ -691,7 +715,6 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* Add Task Modal */}
       {showAddTask && (
         <div className="mo" onClick={() => setShowAddTask(false)} style={{
           position:"fixed", inset:0, background:"rgba(0,0,0,0.3)",
@@ -702,7 +725,6 @@ useEffect(() => {
             boxShadow:"0 24px 80px rgba(0,0,0,0.15)"
           }}>
             <h2 style={{ fontFamily:"'Playfair Display', serif", fontSize:22, color:"#0F172A", marginBottom:24 }}>New Task</h2>
-
             <div style={{ marginBottom:16 }}>
               <label style={{ fontSize:12, fontWeight:600, color:"#64748B", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:6 }}>Task name</label>
               <input value={newTask.title} onChange={e => setNewTask({...newTask, title:e.target.value})}
@@ -713,7 +735,6 @@ useEffect(() => {
                   border:"1.5px solid #E2E8F0", fontFamily:"'DM Sans', sans-serif", color:"#1E293B"
                 }} />
             </div>
-
             <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:24 }}>
               <div>
                 <label style={{ fontSize:12, fontWeight:600, color:"#64748B", textTransform:"uppercase", letterSpacing:"0.05em", display:"block", marginBottom:6 }}>List</label>
@@ -738,7 +759,6 @@ useEffect(() => {
                 </select>
               </div>
             </div>
-
             <div style={{ display:"flex", gap:10 }}>
               <button onClick={() => setShowAddTask(false)} style={{
                 flex:1, padding:"11px", borderRadius:10, border:"1.5px solid #E2E8F0",
