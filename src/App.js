@@ -131,10 +131,8 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
     try {
       const token = await getToken();
       const body = {
-        title,
-        importance: reverseImportance[priority] || "normal",
-        isReminderOn: addedToDay,
-        categories: addedToDay ? ["MyDay"] : [],
+        title, importance: reverseImportance[priority] || "normal",
+        isReminderOn: addedToDay, categories: addedToDay ? ["MyDay"] : [],
         body: { content: notes, contentType: "text" },
       };
       if (dueDate) body.dueDateTime = { dateTime: `${dueDate}T00:00:00`, timeZone: "UTC" };
@@ -166,7 +164,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
     await graphFetch(token, `/me/todo/lists/${task.listId}/tasks/${task.id}/checklistItems/${subtask.id}`, "DELETE");
     setSubtasks(prev => prev.filter(s => s.id !== subtask.id));
   }
- 
+
   return (
     <>
       <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.2)",zIndex:40,animation:"fi 0.2s ease"}}/>
@@ -180,14 +178,12 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
           <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:18,color:"#0F172A",fontWeight:700}}>Task Details</h2>
           <button onClick={onClose} style={{background:"#F1F5F9",border:"none",borderRadius:8,width:32,height:32,cursor:"pointer",fontSize:16,color:"#64748B",display:"flex",alignItems:"center",justifyContent:"center"}}>✕</button>
         </div>
-
         <div style={{flex:1,overflowY:"auto",padding:"20px 24px"}}>
           <div style={{marginBottom:18}}>
             <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Title</label>
             <input value={title} onChange={e=>setTitle(e.target.value)}
               style={{width:"100%",fontSize:16,fontWeight:500,padding:"12px 14px",borderRadius:10,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#0F172A",boxSizing:"border-box"}}/>
           </div>
-
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:18}}>
             <div>
               <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Priority</label>
@@ -202,7 +198,6 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
               <button onClick={()=>setAddedToDay(!addedToDay)} style={{width:"100%",padding:"8px",borderRadius:8,cursor:"pointer",fontSize:13,fontWeight:500,border:`1.5px solid ${addedToDay?"#BFDBFE":"#E2E8F0"}`,background:addedToDay?"#EFF6FF":"#F8FAFC",color:addedToDay?"#2563EB":"#94A3B8",transition:"all 0.15s"}}>{addedToDay?"☀️ In My Day":"+ My Day"}</button>
             </div>
           </div>
-
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:18}}>
             <div>
               <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>List</label>
@@ -216,13 +211,11 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
                 style={{width:"100%",padding:"10px 12px",borderRadius:10,fontSize:13,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",background:"white",cursor:"pointer",boxSizing:"border-box"}}/>
             </div>
           </div>
-
           <div style={{marginBottom:18}}>
             <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:6}}>Notes</label>
             <textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Add notes…" rows={4}
               style={{width:"100%",padding:"10px 14px",borderRadius:10,fontSize:14,border:"1.5px solid #E2E8F0",fontFamily:"'DM Sans',sans-serif",color:"#1E293B",resize:"vertical",boxSizing:"border-box",background:"white"}}/>
           </div>
-
           <div>
             <label style={{fontSize:11,fontWeight:600,color:"#94A3B8",textTransform:"uppercase",letterSpacing:"0.06em",display:"block",marginBottom:10}}>Subtasks</label>
             {loadingSubtasks ? <p style={{color:"#94A3B8",fontSize:13}}>Loading…</p> : (
@@ -243,7 +236,6 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
             )}
           </div>
         </div>
-
         <div style={{padding:"16px 24px",borderTop:"1px solid #F1F5F9",display:"flex",gap:10}}>
           <button onClick={()=>onDelete(task)} style={{padding:"10px 16px",borderRadius:10,border:"1px solid #FEE2E2",background:"white",color:"#EF4444",fontSize:13,cursor:"pointer",fontFamily:"'DM Sans',sans-serif"}}>🗑 Delete</button>
           <button onClick={handleSave} disabled={saving} style={{flex:1,padding:"10px",borderRadius:10,border:"none",background:"#0F172A",color:"white",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,opacity:saving?0.6:1}}>{saving?"Saving…":"Save Changes"}</button>
@@ -270,7 +262,8 @@ export default function App() {
   const [showAddTask, setShowAddTask] = useState(false);
   const [newTask, setNewTask] = useState({ title:"", listId:"", priority:"Medium" });
   const [selectedTask, setSelectedTask] = useState(null);
-  const [dragOverId, setDragOverId] = useState(null);
+  const [myDayOrder, setMyDayOrder] = useState([]);
+  const [dragId, setDragId] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -377,8 +370,36 @@ export default function App() {
 
   const myDayTasks = tasks.filter(t => t.addedToDay && !t.done);
   const sortedMyDay = myDayOrder.length
-  ? [...myDayTasks].sort((a,b) => myDayOrder.indexOf(a.id) - myDayOrder.indexOf(b.id))
-  : [...myDayTasks].sort((a,b) => ["High","Medium","Low"].indexOf(a.priority) - ["High","Medium","Low"].indexOf(b.priority));
+    ? [...myDayTasks].sort((a,b) => {
+        const ai = myDayOrder.indexOf(a.id);
+        const bi = myDayOrder.indexOf(b.id);
+        if (ai === -1 && bi === -1) return 0;
+        if (ai === -1) return 1;
+        if (bi === -1) return -1;
+        return ai - bi;
+      })
+    : [...myDayTasks].sort((a,b) => ["High","Medium","Low"].indexOf(a.priority) - ["High","Medium","Low"].indexOf(b.priority));
+
+  function handleDragStart(id) {
+    setDragId(id);
+  }
+
+  function handleDragOver(e, targetId) {
+    e.preventDefault();
+    if (!dragId || dragId === targetId) return;
+    const ids = sortedMyDay.map(t => t.id);
+    const from = ids.indexOf(dragId);
+    const to = ids.indexOf(targetId);
+    if (from === -1 || to === -1) return;
+    const reordered = [...ids];
+    reordered.splice(from, 1);
+    reordered.splice(to, 0, dragId);
+    setMyDayOrder(reordered);
+  }
+
+  function handleDragEnd() {
+    setDragId(null);
+  }
 
   function startFocus() { setFocusTasks(sortedMyDay); setFocusIndex(0); setAllDone(false); setView("focus"); }
 
@@ -468,9 +489,12 @@ export default function App() {
         .addbtn:hover{background:#E0F2FE!important}
         .stbtn:hover{transform:translateY(-1px);box-shadow:0 12px 40px rgba(59,130,246,0.35)!important}
         .mo{animation:fi 0.15s ease}
+        .drag-chip{transition:all 0.15s;cursor:grab}
+        .drag-chip:active{cursor:grabbing}
         @keyframes fi{from{opacity:0}to{opacity:1}}
         input:focus,select:focus,textarea:focus{outline:2px solid #BFDBFE!important}`}</style>
 
+      {/* Sidebar */}
       <div style={{width:248,background:"white",borderRight:"1px solid #E2E8F0",display:"flex",flexDirection:"column",padding:"0 0 24px",position:"sticky",top:0,height:"100vh",flexShrink:0}}>
         <div style={{padding:"28px 20px 16px"}}>
           <div style={{fontFamily:"'Playfair Display',serif",fontSize:22,color:"#0F172A",fontWeight:700,letterSpacing:"-0.5px"}}>My Day</div>
@@ -506,6 +530,7 @@ export default function App() {
         </div>
       </div>
 
+      {/* Main */}
       <div style={{flex:1,display:"flex",flexDirection:"column"}}>
         <div style={{padding:"28px 36px 0",display:"flex",alignItems:"flex-start",justifyContent:"space-between"}}>
           <div>
@@ -525,6 +550,7 @@ export default function App() {
 
         {error&&<div style={{margin:"16px 36px 0",padding:"12px 16px",background:"#FEE2E2",borderRadius:10,color:"#DC2626",fontSize:13}}>⚠️ {error} <span style={{cursor:"pointer",marginLeft:8,textDecoration:"underline"}} onClick={()=>setError(null)}>Dismiss</span></div>}
 
+        {/* My Day Strip */}
         {myDayTasks.length>0&&(
           <div style={{padding:"20px 36px 0"}}>
             <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",padding:"20px 24px",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
@@ -533,40 +559,45 @@ export default function App() {
                   <span style={{fontSize:18}}>☀️</span>
                   <span style={{fontSize:15,fontWeight:600,color:"#0F172A"}}>Ready to focus</span>
                   <span style={{background:"#EFF6FF",color:"#3B82F6",borderRadius:100,padding:"1px 10px",fontSize:12,fontWeight:600}}>{myDayTasks.length}</span>
+                  <span style={{fontSize:11,color:"#94A3B8"}}>· drag to reorder</span>
                 </div>
                 <button className="stbtn" onClick={startFocus} style={{background:"linear-gradient(135deg,#3B82F6,#6366F1)",color:"white",border:"none",borderRadius:10,padding:"9px 22px",fontSize:14,cursor:"pointer",fontFamily:"'DM Sans',sans-serif",fontWeight:600,transition:"all 0.2s",boxShadow:"0 4px 20px rgba(59,130,246,0.2)"}}>▶ Start</button>
               </div>
               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                 {sortedMyDay.map((task,i)=>{
                   const p=priorityColors[task.priority];
+                  const isDragging=dragId===task.id;
                   return (
-                    <div key={task.id}
+                    <div
+                      key={task.id}
+                      className="drag-chip"
                       draggable
-                      onDragStart={()=>setDragOverId(task.id)}
-                      onDragOver={e=>{
-                        e.preventDefault();
-                        if(dragOverId && dragOverId!==task.id){
-                          const ids=sortedMyDay.map(t=>t.id);
-                          const from=ids.indexOf(dragOverId);
-                          const to=ids.indexOf(task.id);
-                          const reordered=[...ids];
-                          reordered.splice(from,1);
-                          reordered.splice(to,0,dragOverId);
-                          setMyDayOrder(reordered);
-                        }
-                      }}
-                      onDragEnd={()=>setDragOverId(null)}
+                      onDragStart={()=>handleDragStart(task.id)}
+                      onDragOver={e=>handleDragOver(e,task.id)}
+                      onDragEnd={handleDragEnd}
                       onClick={()=>setSelectedTask(task)}
-                      style={{display:"flex",alignItems:"center",gap:6,background:dragOverId===task.id?"#EFF6FF":"#F8FAFC",borderRadius:8,padding:"6px 12px",fontSize:13,border:`1px solid ${dragOverId===task.id?"#BFDBFE":"#E2E8F0"}`,cursor:"grab",userSelect:"none",transition:"all 0.15s"}}>
+                      style={{
+                        display:"flex",alignItems:"center",gap:6,
+                        background:isDragging?"#EFF6FF":"#F8FAFC",
+                        borderRadius:8,padding:"6px 12px",fontSize:13,
+                        border:`1px solid ${isDragging?"#BFDBFE":"#E2E8F0"}`,
+                        opacity:isDragging?0.5:1,
+                        transform:isDragging?"scale(1.02)":"scale(1)",
+                      }}
+                    >
                       <span style={{color:"#94A3B8",fontSize:11,fontWeight:600}}>{i+1}</span>
-                      <span style={{fontSize:10,color:"#CBD5E1"}}>⠿</span>
+                      <span style={{fontSize:11,color:"#CBD5E1",cursor:"grab"}}>⠿</span>
                       <span style={{width:6,height:6,borderRadius:"50%",background:p.dot,flexShrink:0}}/>
                       <span style={{color:"#334155"}}>{task.title}</span>
                     </div>
                   );
                 })}
               </div>
+            </div>
+          </div>
+        )}
 
+        {/* Task List */}
         <div style={{padding:"20px 36px 36px"}}>
           <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
             {displayedTasks.length===0 ? (
