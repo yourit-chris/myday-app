@@ -172,9 +172,15 @@ export default function App() {
   const [newTask, setNewTask] = useState({ title:"", listId:"", priority:"Medium" });
 
   // ── Handle OAuth redirect ──
-  useEffect(() => {
+useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+    const error = params.get("error");
+    const errorDesc = params.get("error_description");
+    if (error) {
+      setError("Microsoft error: " + error + " - " + errorDesc);
+      return;
+    }
     if (code) {
       window.history.replaceState({}, "", window.location.pathname);
       exchangeCode(code).then(tokens => {
@@ -182,11 +188,11 @@ export default function App() {
           localStorage.setItem("ms_tokens", JSON.stringify(tokens));
           setAuthState(tokens);
         } else {
-          setError("Auth failed: " + JSON.stringify(tokens));
+          setError("Token error: " + JSON.stringify(tokens));
         }
       });
     }
-  }, []);
+  }, []);;
 
   // ── Get valid token (refresh if needed) ──
   const getToken = useCallback(async () => {
