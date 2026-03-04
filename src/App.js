@@ -1,6 +1,3 @@
-import { useState, useEffect, useCallback } from "react";
-
-// ─── Microsoft Auth Config ────────────────────────────────────────────────────
 const CLIENT_ID = "637cb567-14f5-41ce-a1af-1ff2c6276418";
 const TENANT_ID = "common";
 const REDIRECT_URI = "https://myday-app-pi.vercel.app";
@@ -9,25 +6,46 @@ const AUTH_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/aut
 const TOKEN_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
 const GRAPH = "https://graph.microsoft.com/v1.0";
 
-// ─── Auth Helpers ─────────────────────────────────────────────────────────────
-function buildAuthUrl() {
+function generateCodeVerifier() {
+  const array = new Uint8Array(32);
+  window.crypto.getRandomValues(array);
+  return btoa(String.fromCharCode(...array))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+async function generateCodeChallenge(verifier) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
+  return btoa(String.fromCharCode(...new Uint8Array(digest)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+}
+
+async function buildAuthUrl() {
+  const verifier = generateCodeVerifier();
+  const challenge = await generateCodeChallenge(verifier);
+  localStorage.setItem("pkce_verifier", verifier);
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
     response_type: "code",
     redirect_uri: REDIRECT_URI,
     scope: SCOPES,
     response_mode: "query",
+    code_challenge: challenge,
+    code_challenge_method: "S256",
     prompt: "select_account",
   });
   return `${AUTH_URL}?${params}`;
 }
 
 async function exchangeCode(code) {
+  const verifier = localStorage.getItem("pkce_verifier");
   const body = new URLSearchParams({
     client_id: CLIENT_ID,
     grant_type: "authorization_code",
     code,
     redirect_uri: REDIRECT_URI,
+    code_verifier: verifier,
     scope: SCOPES,
   });
   const res = await fetch(TOKEN_URL, {
@@ -35,7 +53,9 @@ async function exchangeCode(code) {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
   });
-  return res.json();
+  const data = await res.json();
+  console.log("TOKEN RESPONSE:", data);
+  return data;
 }
 
 async function refreshToken(refresh) {
@@ -65,44 +85,6 @@ async function graphFetch(token, path, method = "GET", body = null) {
   if (res.status === 204) return null;
   return res.json();
 }
-
-// ─── Priority mapping ─────────────────────────────────────────────────────────
-const importanceMap = { high: "High", normal: "Medium", low: "Low" };
-const reverseImportance = { High: "high", Medium: "normal", Low: "low" };
-const priorityColors = {
-  High: { bg: "#FEE2E2", text: "#DC2626", dot: "#EF4444" },
-  Medium: { bg: "#FEF3C7", text: "#D97706", dot: "#F59E0B" },
-  Low: { bg: "#DCFCE7", text: "#16A34A", dot: "#22C55E" },
-};
-
-// ─── Confetti ─────────────────────────────────────────────────────────────────
-function ConfettiPop({ onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 1200); return () => clearTimeout(t); }, [onDone]);
-  const pieces = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    x: (Math.random() - 0.5) * 220,
-    y: -(Math.random() * 130 + 40),
-    color: ["#3B82F6","#10B981","#F59E0B","#8B5CF6","#EC4899","#F97316"][i % 6],
-    size: Math.random() * 9 + 4,
-    round: Math.random() > 0.5,
-  }));
-  return (
-    <div style={{ position:"absolute", top:"50%", left:"50%", pointerEvents:"none", zIndex:100 }}>
-      {pieces.map(p => (
-        <div key={p.id} style={{
-          position:"absolute", width:p.size, height:p.size,
-          background:p.color, borderRadius: p.round ? "50%" : "2px",
-          left: p.x, top: p.y,
-          animation: `cfetti 1.1s ease-out forwards`,
-          opacity: 0,
-          animationDelay: `${Math.random()*0.15}s`
-        }} />
-      ))}
-      <style>{`@keyframes cfetti{0%{opacity:1;transform:translate(0,0) rotate(0deg)}100%{opacity:0;transform:translate(0,30px) rotate(480deg)}}`}</style>
-    </div>
-  );
-}
-
 // ─── Login Screen ─────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin }) {
   return (
