@@ -210,14 +210,7 @@ export default function App() {
     if (!authState?.access_token) return;
     loadAll();
   }, [authState]);
-  ```
-
- Then save the file and in Git Bash run:
- ```
- git add .
- git commit -m "fix eslint errors"
- git push
-
+  
   async function loadAll() {
     setLoading(true);
     setError(null);
