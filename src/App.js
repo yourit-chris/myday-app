@@ -208,7 +208,7 @@ export default function App() {
   // ── Load data after auth ──
   useEffect(() => {
     if (!authState?.access_token) return;
-    loadAll();
+    loadAll(); // eslint-disable-line react-hooks/exhaustive-deps
   }, [authState]);
   
   async function loadAll() {
