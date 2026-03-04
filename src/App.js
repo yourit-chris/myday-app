@@ -60,21 +60,6 @@ async function exchangeCode(code) {
   return res.json();
 }
 
-async function refreshToken(refresh) {
-  const body = new URLSearchParams({
-    client_id: CLIENT_ID,
-    grant_type: "refresh_token",
-    refresh_token: refresh,
-    scope: SCOPES,
-  });
-  const res = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body,
-  });
-  return res.json();
-}
-
 async function graphFetch(token, path, method = "GET", body = null) {
   const res = await fetch(`${GRAPH}${path}`, {
     method,
