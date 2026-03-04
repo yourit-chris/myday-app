@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 // ─── Microsoft Auth Config ────────────────────────────────────────────────────
 const CLIENT_ID = "637cb567-14f5-41ce-a1af-1ff2c6276418";
 const TENANT_ID = "common";
-const REDIRECT_URI = "https://myday-b7gpy8gka-yourit-chris-projects.vercel.app";
+const REDIRECT_URI = "https://myday-app-pi.vercel.app";
 const SCOPES = "Tasks.ReadWrite User.Read";
 const AUTH_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize`;
 const TOKEN_URL = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`;
