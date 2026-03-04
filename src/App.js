@@ -220,16 +220,8 @@ export default function App() {
   }, []);
 
   // ── Get valid token ──
-  const getToken = useCallback(async () => {
+const getToken = useCallback(async () => {
     if (!authState) return null;
-    if (authState.refresh_token) {
-      const fresh = await refreshToken(authState.refresh_token);
-      if (fresh.access_token) {
-        localStorage.setItem("ms_tokens", JSON.stringify(fresh));
-        setAuthState(fresh);
-        return fresh.access_token;
-      }
-    }
     return authState.access_token;
   }, [authState]);
 
