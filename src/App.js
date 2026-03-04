@@ -412,7 +412,6 @@ export default function App() {
   if (view === "focus") {
     const cur = focusTasks[focusIndex];
     const focusPriority = cur ? priorityColors[cur.priority] : null;
-    const p = cur ? priorityColors[cur.priority] : null;
     return (
       <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",padding:24}}>
         <style>{`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
