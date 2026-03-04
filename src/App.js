@@ -77,7 +77,7 @@ const priorityColors = {
 
 // ─── Confetti ─────────────────────────────────────────────────────────────────
 function ConfettiPop({ onDone }) {
-  useEffect(() => { const t = setTimeout(onDone, 1200); return () => clearTimeout(t); }, []);
+  useEffect(() => { const t = setTimeout(onDone, 1200); return () => clearTimeout(t); }, [onDone]);
   const pieces = Array.from({ length: 20 }, (_, i) => ({
     id: i,
     x: (Math.random() - 0.5) * 220,
@@ -210,6 +210,13 @@ export default function App() {
     if (!authState?.access_token) return;
     loadAll();
   }, [authState]);
+  ```
+
+ Then save the file and in Git Bash run:
+ ```
+ git add .
+ git commit -m "fix eslint errors"
+ git push
 
   async function loadAll() {
     setLoading(true);
