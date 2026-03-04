@@ -237,7 +237,7 @@ const getToken = useCallback(async () => {
             listName: list.displayName,
             title: t.title,
             priority: importanceMap[t.importance] || "Medium",
-            addedToDay: t.isReminderOn || false,
+            addedToDay: t.categories?.includes("MyDay") || t.isReminderOn || false,
             done: t.status === "completed",
             msTask: t,
           }));
@@ -291,6 +291,7 @@ const getToken = useCallback(async () => {
       const newVal = !task.addedToDay;
       await graphFetch(token, `/me/todo/lists/${task.listId}/tasks/${task.id}`, "PATCH", {
         isReminderOn: newVal,
+        categories: newVal ? ["MyDay"] : [],
       });
       setTasks(prev => prev.map(t => t.id === task.id ? { ...t, addedToDay: newVal } : t));
     } catch { setError("Sync failed."); }
