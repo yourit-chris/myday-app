@@ -270,6 +270,7 @@ export default function App() {
   const [showAddTask, setShowAddTask] = useState(false);
   const [newTask, setNewTask] = useState({ title:"", listId:"", priority:"Medium" });
   const [selectedTask, setSelectedTask] = useState(null);
+  const [dragOverId, setDragOverId] = useState(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -375,7 +376,9 @@ export default function App() {
   }
 
   const myDayTasks = tasks.filter(t => t.addedToDay && !t.done);
-  const sortedMyDay = [...myDayTasks].sort((a,b) => ["High","Medium","Low"].indexOf(a.priority) - ["High","Medium","Low"].indexOf(b.priority));
+  const sortedMyDay = myDayOrder.length
+  ? [...myDayTasks].sort((a,b) => myDayOrder.indexOf(a.id) - myDayOrder.indexOf(b.id))
+  : [...myDayTasks].sort((a,b) => ["High","Medium","Low"].indexOf(a.priority) - ["High","Medium","Low"].indexOf(b.priority));
 
   function startFocus() { setFocusTasks(sortedMyDay); setFocusIndex(0); setAllDone(false); setView("focus"); }
 
@@ -537,17 +540,32 @@ export default function App() {
                 {sortedMyDay.map((task,i)=>{
                   const p=priorityColors[task.priority];
                   return (
-                    <div key={task.id} onClick={()=>setSelectedTask(task)} style={{display:"flex",alignItems:"center",gap:6,background:"#F8FAFC",borderRadius:8,padding:"6px 12px",fontSize:13,border:"1px solid #E2E8F0",cursor:"pointer"}}>
+                    <div key={task.id}
+                      draggable
+                      onDragStart={()=>setDragOverId(task.id)}
+                      onDragOver={e=>{
+                        e.preventDefault();
+                        if(dragOverId && dragOverId!==task.id){
+                          const ids=sortedMyDay.map(t=>t.id);
+                          const from=ids.indexOf(dragOverId);
+                          const to=ids.indexOf(task.id);
+                          const reordered=[...ids];
+                          reordered.splice(from,1);
+                          reordered.splice(to,0,dragOverId);
+                          setMyDayOrder(reordered);
+                        }
+                      }}
+                      onDragEnd={()=>setDragOverId(null)}
+                      onClick={()=>setSelectedTask(task)}
+                      style={{display:"flex",alignItems:"center",gap:6,background:dragOverId===task.id?"#EFF6FF":"#F8FAFC",borderRadius:8,padding:"6px 12px",fontSize:13,border:`1px solid ${dragOverId===task.id?"#BFDBFE":"#E2E8F0"}`,cursor:"grab",userSelect:"none",transition:"all 0.15s"}}>
                       <span style={{color:"#94A3B8",fontSize:11,fontWeight:600}}>{i+1}</span>
+                      <span style={{fontSize:10,color:"#CBD5E1"}}>⠿</span>
                       <span style={{width:6,height:6,borderRadius:"50%",background:p.dot,flexShrink:0}}/>
                       <span style={{color:"#334155"}}>{task.title}</span>
                     </div>
                   );
                 })}
               </div>
-            </div>
-          </div>
-        )}
 
         <div style={{padding:"20px 36px 36px"}}>
           <div style={{background:"white",borderRadius:20,border:"1px solid #E2E8F0",overflow:"hidden",boxShadow:"0 2px 12px rgba(0,0,0,0.04)"}}>
