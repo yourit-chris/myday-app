@@ -166,9 +166,7 @@ function TaskDetailPanel({ task, lists, onClose, onSave, onDelete, getToken }) {
     await graphFetch(token, `/me/todo/lists/${task.listId}/tasks/${task.id}/checklistItems/${subtask.id}`, "DELETE");
     setSubtasks(prev => prev.filter(s => s.id !== subtask.id));
   }
-
-  const focusPriority = cur ? priorityColors[cur.priority] : null;
-  
+ 
   return (
     <>
       <div onClick={onClose} style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.2)",zIndex:40,animation:"fi 0.2s ease"}}/>
@@ -413,6 +411,7 @@ export default function App() {
 
   if (view === "focus") {
     const cur = focusTasks[focusIndex];
+    const focusPriority = cur ? priorityColors[cur.priority] : null;
     const p = cur ? priorityColors[cur.priority] : null;
     return (
       <div style={{minHeight:"100vh",background:"linear-gradient(135deg,#0F172A 0%,#1E293B 60%,#0F172A 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"'DM Sans',sans-serif",padding:24}}>
