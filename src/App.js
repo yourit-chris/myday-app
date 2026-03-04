@@ -334,7 +334,7 @@ useEffect(() => {
 
   // ─────────────────────────────────────────────────────────────────────────────
   if (!authState?.access_token && !new URLSearchParams(window.location.search).get("code")) {
-    return <LoginScreen onLogin={() => { window.location.href = buildAuthUrl(); }} />;
+    return <LoginScreen onLogin={async () => { window.location.href = await buildAuthUrl(); }} />
   }
 
   if (loading) {
