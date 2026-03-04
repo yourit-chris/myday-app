@@ -230,17 +230,20 @@ const getToken = useCallback(async () => {
       for (const list of fetchedLists) {
         const tasksData = await graphFetch(token, `/me/todo/lists/${list.id}/tasks?$top=100`);
         const listTasks = (tasksData?.value || [])
-          .filter(t => t.status !== "completed")
-          .map(t => ({
-            id: t.id,
-            listId: list.id,
-            listName: list.displayName,
-            title: t.title,
-            priority: importanceMap[t.importance] || "Medium",
-            addedToDay: t.categories?.includes("MyDay") || t.isReminderOn || false,
-            done: t.status === "completed",
-            msTask: t,
-          }));
+      .filter(t => t.status !== "completed")
+      .map(t => {
+        console.log("TASK DATA:", JSON.stringify(t));
+        return {
+          id: t.id,
+          listId: list.id,
+          listName: list.displayName,
+          title: t.title,
+          priority: importanceMap[t.importance] || "Medium",
+          addedToDay: t.categories?.includes("MyDay") || t.isReminderOn || false,
+          done: t.status === "completed",
+          msTask: t,
+        };
+})
         allTasks.push(...listTasks);
       }
       setTasks(allTasks);
